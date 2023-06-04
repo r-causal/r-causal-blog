@@ -6,10 +6,10 @@ categories: [halfmoon, balance, packages]
 image: "image.png"
 ---
 
+<img src="/img/halfmoon.png" align="right" height="138" fig-alt="the halfmoon package hex sticker: a Japanese wood print with a full moon and halfmoon written in cursive"/>
+
 We're thrilled to announce the initial release of the halfmoon package to CRAN!
 halfmoon is a toolkit to assess balance in propensity-based models.
-
-<img src="/img/halfmoon.png" align="right" height="138" fig-alt="the halfmoon package hex sticker: a Japanese wood print with a full moon and halfmoon written in cursive"/>
 
 ## Getting started with halfmoon
 
