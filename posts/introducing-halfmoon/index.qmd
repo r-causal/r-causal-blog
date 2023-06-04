@@ -9,7 +9,7 @@ image: "image.png"
 We're thrilled to announce the initial release of the halfmoon package to CRAN!
 halfmoon is a toolkit to assess balance in propensity-based models.
 
-<img src="/img/halfmoon.png" align="right" height="138" fig-alt="the halfmoon package hexsticker: a japanese woodprint with a full moon and halfmoon written in cursive"/>
+<img src="/img/halfmoon.png" align="right" height="138" fig-alt="the halfmoon package hex sticker: a Japanese wood print with a full moon and halfmoon written in cursive"/>
 
 ## Getting started with halfmoon
 
@@ -20,13 +20,13 @@ halfmoon is a toolkit for assessing balance in propensity score models. Addition
 library(halfmoon)
 ```
 
-Let's take a look at an example using the built-in dataset, `nhefs_weights`. `nhefs_weights` is an extension of the `nhefs` dataset that includes a variety of propensity-score weights for the causal question: "does quitting smoking increase weight?" You can find the data for this question in the [causaldata](https://github.com/NickCH-K/causaldata) package. 
+Let's take a look at an example using the built-in dataset, `nhefs_weights`. `nhefs_weights` is an extension of the `nhefs` dataset that includes a variety of propensity-score weights for the causal question: "Does quitting smoking increase weight?" You can find the data for this question in the [causaldata](https://github.com/NickCH-K/causaldata) package. 
 
 ## Population-level balance
 
-The main tool in halfmoon for assessing balance at the population level is `geom_mirrored_histogram()`.
+The primary tool in halfmoon for assessing balance at the population level is `geom_mirrored_histogram()`.
 
-Here's the original, unweighted sample using `geom_mirrored_histogram()`. The histogram on top is the exposed population, those who quit smoking. The histogram on the bottom is the unexposed population, those who did not quit smoking. While there is a lot of overlap, it seems like the two groups are slightly different.
+Here's the original, unweighted sample using `geom_mirrored_histogram()`. The histogram on top is the exposed population, those who quit smoking. The histogram on the bottom is the unexposed population, those who did not quit smoking. While there is a lot of overlap, the two groups are slightly different.
 
 ```{r}
 library(ggplot2)
@@ -75,7 +75,7 @@ ggplot(nhefs_weights, aes(.fitted)) +
   scale_fill_okabe_ito()
 ```
 
-Mirrored histograms are really useful for the dual purpose of understanding how similar the weighted populations are and understanding exactly the population that is being analyzed. 
+Mirrored histograms are helpful for the dual purpose of understanding how similar the weighted populations are and precisely the population you're analyzing. 
 
 ## Variable-level balance
 
@@ -96,7 +96,7 @@ propensity_model <- glm(
 )
 ```
 
-One way to assess if we achieved balance within the confounding variables is calculating the standardized mean difference (SMD) of the confounder between exposure groups. The closer the SMD is to 0, the more balanced the groups are on average. A common rule of thumb is to have the SMD be less than 0.1[^1].
+One way to assess if we achieved balance within the confounding variables is by calculating the standardized mean difference (SMD) of the confounder between exposure groups. The closer the SMD is to 0, the more balanced the groups are on average. A common rule of thumb is to have the SMD be less than 0.1[^1].
 
 [^1]: But don't put too much faith in such quasirules.
 
@@ -130,11 +130,11 @@ love_plot(plot_df) +
   scale_color_okabe_ito()
 ```
 
-One down side to SMD plots is that they only give you information about one statistic that focuses on the center of the variable. For a binary or categorical variable, that's usually enough, but for a continuous variable, we could be balanced in the mean but unbalanced in the tails.
+One downside to SMD plots is that they only give you information about one statistic that focuses on the center of the variable. For a binary or categorical variable, that's usually enough. However, a continuous variable could be balanced in the mean but unbalanced in the tails.
 
-Let's take a look at `smokeyrs`, a continuish[^2] variable that represents the smoke-years a participant had prior to quitting smoking. We'll use the empirical cumulative distribution function (ECDF) to compare the differences between exposure groups across the range of `smokeyers`.
+Let's look at `smokeyrs`, a continuish[^2] variable that represents the smoke-years a participant had before quitting smoking. We'll use the empirical cumulative distribution function (ECDF) to compare the differences between exposure groups across the range of `smokeyrs`.
 
-[^2]: I call variables like this continuish because the number of years is represented as an integer. In theory, this concept is continuous, but because it is rounded to the year in the data, there are only `r dplyr::n_distinct(nhefs_weights$smokeyrs)` values in the variable.
+[^2]: I call variables like this continuish because the number of years is represented as an integer. Theoretically, this concept is continuous, but because it is rounded to the year in the data, there are only `r dplyr::n_distinct(nhefs_weights$smokeyrs)` values in the variable.
 
 ```{r}
 ggplot(
@@ -160,11 +160,11 @@ ggplot(
   scale_color_okabe_ito()
 ```
 
-The balance is much better
+The balance is much better.
 
 ## Matching
 
-The examples thus far have used propensity score weights, but we can use the same techniques by treating matching as an extreme case of weighting where the weight for an observation is either 1 (the observation is kept) or 0 (the observation is removed). 
+The examples thus far have used propensity score weights. We can also use the same techniques by treating matching as an extreme case of weighting where the weight for an observation is either 1 (the observation stays in the dataset) or 0 (the observation is removed from the dataset). 
 
 halfmoon's `bind_matches()` facilitates the comparison of many matched datasets by creating a dataset with these weights for each model.
 
@@ -225,7 +225,7 @@ ggplot(matches, aes(ps)) +
 
 ## Learn more in the book
 
-To see an applied example of a causal analysis that makes use of halfmoon, check out [the second chapter of *Causal Inference in R*](https://www.r-causal.org/chapters/chapter-02.html).
+To see an applied example of a causal analysis using halfmoon, check out [the second chapter of *Causal Inference in R*](https://www.r-causal.org/chapters/chapter-02.html).
 
 ## Other techniques
 
@@ -235,8 +235,8 @@ For an example of how weighted tables can help you understand the population und
 
 ## Future work
 
-halfmoon is early in its lifecycle, although we have been teaching these techniques for several years. Right now, the focus is on causal questions with binary exposures. However, these techniques generalize to other types of exposures, and we plan to fully support continuous and categorical exposures.
+halfmoon is early in its lifecycle, although we have been teaching these techniques for several years. Right now, the focus is on causal questions with binary exposures. However, these techniques generalize to other exposures, and we plan to support continuous and categorical exposures fully.
 
 ## Related work
 
-halfmoon has similar goals to the popular [cobalt](https://ngreifer.github.io/cobalt/) package. halfmoon is intended to be more focused and modular than cobalt, but you might prefer cobalt if you work exclusively with related packages like MatchIt and WeightIt.
+halfmoon has similar goals to the popular [cobalt](https://ngreifer.github.io/cobalt/) package. We designed halfmoon to be more focused and modular than cobalt, but you might prefer cobalt if you work exclusively with related packages like MatchIt and WeightIt. cobalt also currently supports a broader range of balance metrics than halfmoon.
