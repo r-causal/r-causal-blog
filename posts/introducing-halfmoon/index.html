@@ -151,9 +151,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div class="quarto-title column-body">
       <h1 class="title">Introducing halfmoon</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">news</div>
-                <div class="quarto-category">code</div>
-                <div class="quarto-category">analysis</div>
+                <div class="quarto-category">halfmoon</div>
+                <div class="quarto-category">balance</div>
+                <div class="quarto-category">packages</div>
               </div>
                   </div>
   </div>
@@ -189,8 +189,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+<p><img src="../../img/halfmoon.png" align="right" height="138" fig-alt="the halfmoon package hex sticker: a Japanese wood print with a full moon and halfmoon written in cursive"></p>
 <p>We’re thrilled to announce the initial release of the halfmoon package to CRAN! halfmoon is a toolkit to assess balance in propensity-based models.</p>
-<p><img src="../../img/halfmoon.png" align="right" height="138" fig-alt="the halfmoon package hexsticker: a japanese woodprint with a full moon and halfmoon written in cursive"></p>
 <section id="getting-started-with-halfmoon" class="level2">
 <h2 class="anchored" data-anchor-id="getting-started-with-halfmoon">Getting started with halfmoon</h2>
 <p>halfmoon is a toolkit for assessing balance in propensity score models. Additionally, it can help build your intuition for which populations various weighting and matching strategies are working. Let’s explore some of the things halfmoon can help with.</p>
@@ -198,12 +198,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("halfmoon")</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(halfmoon)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Let’s take a look at an example using the built-in dataset, <code>nhefs_weights</code>. <code>nhefs_weights</code> is an extension of the <code>nhefs</code> dataset that includes a variety of propensity-score weights for the causal question: “does quitting smoking increase weight?” You can find the data for this question in the <a href="https://github.com/NickCH-K/causaldata">causaldata</a> package.</p>
+<p>Let’s take a look at an example using the built-in dataset, <code>nhefs_weights</code>. <code>nhefs_weights</code> is an extension of the <code>nhefs</code> dataset that includes a variety of propensity-score weights for the causal question: “Does quitting smoking increase weight?” You can find the data for this question in the <a href="https://github.com/NickCH-K/causaldata">causaldata</a> package.</p>
 </section>
 <section id="population-level-balance" class="level2">
 <h2 class="anchored" data-anchor-id="population-level-balance">Population-level balance</h2>
-<p>The main tool in halfmoon for assessing balance at the population level is <code>geom_mirrored_histogram()</code>.</p>
-<p>Here’s the original, unweighted sample using <code>geom_mirrored_histogram()</code>. The histogram on top is the exposed population, those who quit smoking. The histogram on the bottom is the unexposed population, those who did not quit smoking. While there is a lot of overlap, it seems like the two groups are slightly different.</p>
+<p>The primary tool in halfmoon for assessing balance at the population level is <code>geom_mirrored_histogram()</code>.</p>
+<p>Here’s the original, unweighted sample using <code>geom_mirrored_histogram()</code>. The histogram on top is the exposed population, those who quit smoking. The histogram on the bottom is the unexposed population, those who did not quit smoking. While there is a lot of overlap, the two groups are slightly different.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggokabeito)</span>
@@ -254,7 +254,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Mirrored histograms are really useful for the dual purpose of understanding how similar the weighted populations are and understanding exactly the population that is being analyzed.</p>
+<p>Mirrored histograms are helpful for the dual purpose of understanding how similar the weighted populations are and precisely the population you’re analyzing.</p>
 </section>
 <section id="variable-level-balance" class="level2">
 <h2 class="anchored" data-anchor-id="variable-level-balance">Variable-level balance</h2>
@@ -272,7 +272,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> nhefs_complete</span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>One way to assess if we achieved balance within the confounding variables is calculating the standardized mean difference (SMD) of the confounder between exposure groups. The closer the SMD is to 0, the more balanced the groups are on average. A common rule of thumb is to have the SMD be less than 0.1<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>One way to assess if we achieved balance within the confounding variables is by calculating the standardized mean difference (SMD) of the confounder between exposure groups. The closer the SMD is to 0, the more balanced the groups are on average. A common rule of thumb is to have the SMD be less than 0.1<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
 <p>Let’s calculate the SMDs for each variable using the different weights in <code>nhefs_weights</code>. halfmoon’s <code>tidy_smd()</code> creates a dataset with the SMDs for each confounder, and <code>geom_love()</code> visualizes the relationship.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>plot_df <span class="ot">&lt;-</span> <span class="fu">tidy_smd</span>(</span>
@@ -305,8 +305,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>One down side to SMD plots is that they only give you information about one statistic that focuses on the center of the variable. For a binary or categorical variable, that’s usually enough, but for a continuous variable, we could be balanced in the mean but unbalanced in the tails.</p>
-<p>Let’s take a look at <code>smokeyrs</code>, a continuish<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> variable that represents the smoke-years a participant had prior to quitting smoking. We’ll use the empirical cumulative distribution function (ECDF) to compare the differences between exposure groups across the range of <code>smokeyers</code>.</p>
+<p>One downside to SMD plots is that they only give you information about one statistic that focuses on the center of the variable. For a binary or categorical variable, that’s usually enough. However, a continuous variable could be balanced in the mean but unbalanced in the tails.</p>
+<p>Let’s look at <code>smokeyrs</code>, a continuish<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> variable that represents the smoke-years a participant had before quitting smoking. We’ll use the empirical cumulative distribution function (ECDF) to compare the differences between exposure groups across the range of <code>smokeyrs</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  nhefs_weights,</span>
@@ -334,11 +334,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The balance is much better</p>
+<p>The balance is much better.</p>
 </section>
 <section id="matching" class="level2">
 <h2 class="anchored" data-anchor-id="matching">Matching</h2>
-<p>The examples thus far have used propensity score weights, but we can use the same techniques by treating matching as an extreme case of weighting where the weight for an observation is either 1 (the observation is kept) or 0 (the observation is removed).</p>
+<p>The examples thus far have used propensity score weights. We can also use the same techniques by treating matching as an extreme case of weighting where the weight for an observation is either 1 (the observation stays in the dataset) or 0 (the observation is removed from the dataset).</p>
 <p>halfmoon’s <code>bind_matches()</code> facilitates the comparison of many matched datasets by creating a dataset with these weights for each model.</p>
 <p>Consider these two objects from the <a href="https://github.com/kosukeimai/MatchIt">MatchIt</a> documentation:</p>
 <div class="cell">
@@ -406,7 +406,7 @@ NSW6     1  22    9  black       0        1    0    0  4056.4940      1      1</
 </section>
 <section id="learn-more-in-the-book" class="level2">
 <h2 class="anchored" data-anchor-id="learn-more-in-the-book">Learn more in the book</h2>
-<p>To see an applied example of a causal analysis that makes use of halfmoon, check out <a href="https://www.r-causal.org/chapters/chapter-02.html">the second chapter of <em>Causal Inference in R</em></a>.</p>
+<p>To see an applied example of a causal analysis using halfmoon, check out <a href="https://www.r-causal.org/chapters/chapter-02.html">the second chapter of <em>Causal Inference in R</em></a>.</p>
 </section>
 <section id="other-techniques" class="level2">
 <h2 class="anchored" data-anchor-id="other-techniques">Other techniques</h2>
@@ -415,11 +415,11 @@ NSW6     1  22    9  black       0        1    0    0  4056.4940      1      1</
 </section>
 <section id="future-work" class="level2">
 <h2 class="anchored" data-anchor-id="future-work">Future work</h2>
-<p>halfmoon is early in its lifecycle, although we have been teaching these techniques for several years. Right now, the focus is on causal questions with binary exposures. However, these techniques generalize to other types of exposures, and we plan to fully support continuous and categorical exposures.</p>
+<p>halfmoon is early in its lifecycle, although we have been teaching these techniques for several years. Right now, the focus is on causal questions with binary exposures. However, these techniques generalize to other exposures, and we plan to support continuous and categorical exposures fully.</p>
 </section>
 <section id="related-work" class="level2">
 <h2 class="anchored" data-anchor-id="related-work">Related work</h2>
-<p>halfmoon has similar goals to the popular <a href="https://ngreifer.github.io/cobalt/">cobalt</a> package. halfmoon is intended to be more focused and modular than cobalt, but you might prefer cobalt if you work exclusively with related packages like MatchIt and WeightIt.</p>
+<p>halfmoon has similar goals to the popular <a href="https://ngreifer.github.io/cobalt/">cobalt</a> package. We designed halfmoon to be more focused and modular than cobalt, but you might prefer cobalt if you work exclusively with related packages like MatchIt and WeightIt. cobalt also currently supports a broader range of balance metrics than halfmoon.</p>
 
 
 </section>
@@ -429,7 +429,7 @@ NSW6     1  22    9  black       0        1    0    0  4056.4940      1      1</
 
 <ol>
 <li id="fn1"><p>But don’t put too much faith in such quasirules.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>I call variables like this continuish because the number of years is represented as an integer. In theory, this concept is continuous, but because it is rounded to the year in the data, there are only 60 values in the variable.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>I call variables like this continuish because the number of years is represented as an integer. Theoretically, this concept is continuous, but because it is rounded to the year in the data, there are only 60 values in the variable.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
