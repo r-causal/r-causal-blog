@@ -1,0 +1,71 @@
+---
+title: "Causal Inference in R"
+listing:
+  - id: latest-posts
+    contents: 
+    - /posts
+    sort: "date desc"
+    type: grid
+    categories: false
+    sort-ui: false
+    filter-ui: false
+    max-items: 3
+    feed: false
+  - id: upcoming-courses
+    contents: 
+    - /courses
+    sort: "date desc"
+    type: grid
+    categories: false
+    sort-ui: false
+    filter-ui: false
+    max-items: 3
+    feed: false
+---
+
+Welcome to the Causal Inference in R Blog! Here you'll find more information about our packages, book, courses, and other information about causal inference.
+
+## R Packages
+
+We develop opinionated R packages to make causal inference in R easier and more principled. Our packages are designed to work well with each other and in the [Tidyverse](https://www.tidyverse.org/). They're also quite modular, meaning you can pick and choose the packages you like to work in a wide variety of settings.
+
+<ul id="hexGrid">
+  <li class="hex">
+    <a class="hexIn" href="https://r-causal.github.io/halfmoon">
+      <img src="img/halfmoon.png" alt="" />
+    </a>
+  </li>
+  <li class="hex">
+    <a class="hexIn" href="https://r-causal.github.io/propensity">
+      <img src="img/propensity.png" alt="" />
+    </a>
+  </li>
+  <li class="hex">
+    <a class="hexIn" href="https://r-causal.github.io/tipr">
+      <img src="img/tipr.png" alt="" />
+    </a>
+  </li>
+  <li class="hex">
+    <a class="hexIn" href="https://r-causal.github.io/quartets">
+      <img src="img/quartets.png" alt="" />
+    </a>
+  </li>
+  <li class="hex">
+    <a class="hexIn" href="https://r-causal.github.io/ggdag">
+      <img src="img/ggdag.png" alt="" />
+    </a>
+  </li>
+</ul>
+
+## [Latest posts](posts.qmd)
+
+::: {#latest-posts}
+
+:::
+
+
+## [Upcoming courses](posts.qmd)
+
+::: {#upcoming-courses}
+
+:::

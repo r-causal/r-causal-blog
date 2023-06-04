@@ -1,0 +1,14 @@
+---
+title: "About"
+about:
+  template: jolla
+  links:
+    - icon: github
+      text: Github
+      href: https://github.com/r-causal
+---
+
+The `r-causal` organization is run by [Malcolm Barrett](https://malco.io/), [Lucy D'Agostino McGowan](https://www.lucymcgowan.com/), and [Travis Gerke](https://travisgerke.com/), the authors of [Causal Inference in R](https://www.r-causal.org/).
+
+
+

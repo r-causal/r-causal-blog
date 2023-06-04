@@ -1,0 +1,10 @@
+---
+title: "NYR Conference: July 13-14"
+categories: ["two-day workshop", "nyr", "in-person", "virtual"]
+image: "image.png"
+---
+
+Join us for a [two-day workshop](https://rstats.ai/nyr.html#causal-inference-in-r) at the [New York R conference](https://rstats.ai/nyr.html)!
+Available in-person and virtual.
+
+![](image.png)

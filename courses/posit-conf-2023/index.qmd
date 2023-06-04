@@ -1,0 +1,11 @@
+---
+title: "posit::conf(2023) Sept 17-18"
+categories: ["two-day workshop", "posit::conf", "in-person"]
+image: "image.jpeg"
+---
+
+Join us for a [two-day workshop](https://reg.conf.posit.co/flow/posit/positconf23/attendee-portal/page/sessioncatalog?search=causal&search.sessiontype=1675316728702001wr6r) at the [posit::conf(2023)](https://posit.co/conference/) conference! Available in-person and virtual.
+
+{{< video https://www.youtube.com/embed/x4TKX3Ci41c >}}
+
+To learn more about our workshop, visit the [GitHub repository](https://github.com/r-causal/causal_inference_r_workshop) containing materials you'll learn.
