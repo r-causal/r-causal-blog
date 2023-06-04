@@ -2,7 +2,7 @@
 title: "Introducing halfmoon"
 author: "Malcolm Barrett"
 date: "2023-06-02"
-categories: [news, code, analysis]
+categories: [halfmoon, balance, packages]
 image: "image.png"
 ---
 
