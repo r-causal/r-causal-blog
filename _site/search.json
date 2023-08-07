@@ -1,10 +1,45 @@
 [
   {
-    "objectID": "courses.html",
-    "href": "courses.html",
-    "title": "Upcoming Courses",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Causal Inference in R",
     "section": "",
-    "text": "posit::conf(2023) Sept 17-18\n\n\n\n\n\n\n\ntwo-day workshop\n\n\nposit::conf\n\n\nin-person\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nNYR Conference: July 13-14\n\n\n\n\n\n\n\ntwo-day workshop\n\n\nnyr\n\n\nin-person\n\n\nvirtual\n\n\n\n\n\n\n\n\n\n \n\n\n\n\nNo matching items"
+    "text": "Welcome to the Causal Inference in R Blog! Here you’ll find more information about our packages, book, courses, and other information about causal inference."
+  },
+  {
+    "objectID": "index.html#r-packages",
+    "href": "index.html#r-packages",
+    "title": "Causal Inference in R",
+    "section": "R Packages",
+    "text": "R Packages\nWe develop opinionated R packages to make causal inference in R easier and more principled. Our packages are designed to work well with each other and in the Tidyverse. They’re also quite modular, meaning you can pick and choose the packages you like to work in a wide variety of settings."
+  },
+  {
+    "objectID": "index.html#latest-posts",
+    "href": "index.html#latest-posts",
+    "title": "Causal Inference in R",
+    "section": "Latest posts",
+    "text": "Latest posts\n\n\n\n\n\n\n\n\n\n\nVisual Diagnostic Tools for Causal Inference\n\n\n\n\n\n\nLucy D’Agostino McGowan\n\n\nAug 4, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIntroducing halfmoon\n\n\n\n\n\n\nMalcolm Barrett\n\n\nJun 2, 2023\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html#upcoming-courses",
+    "href": "index.html#upcoming-courses",
+    "title": "Causal Inference in R",
+    "section": "Upcoming courses",
+    "text": "Upcoming courses\n\n\n\n\n\n\n\n\n\n\nposit::conf(2023) Sept 17-18\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNYR Conference: July 13-14\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "courses/nyr-2023/index.html",
+    "href": "courses/nyr-2023/index.html",
+    "title": "NYR Conference: July 13-14",
+    "section": "",
+    "text": "Join us for a two-day workshop at the New York R conference! Available in-person and virtual."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "The r-causal organization is run by Malcolm Barrett, Lucy D’Agostino McGowan, and Travis Gerke, the authors of Causal Inference in R."
   },
   {
     "objectID": "posts/introducing-halfmoon/index.html",
@@ -70,39 +105,60 @@
     "text": "Related work\nhalfmoon has similar goals to the popular cobalt package. We designed halfmoon to be more focused and modular than cobalt, but you might prefer cobalt if you work exclusively with related packages like MatchIt and WeightIt. cobalt also currently supports a broader range of balance metrics than halfmoon."
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Causal Inference in R",
+    "objectID": "courses.html",
+    "href": "courses.html",
+    "title": "Upcoming Courses",
     "section": "",
-    "text": "Welcome to the Causal Inference in R Blog! Here you’ll find more information about our packages, book, courses, and other information about causal inference."
+    "text": "posit::conf(2023) Sept 17-18\n\n\n\n\n\n\n\ntwo-day workshop\n\n\nposit::conf\n\n\nin-person\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nNYR Conference: July 13-14\n\n\n\n\n\n\n\ntwo-day workshop\n\n\nnyr\n\n\nin-person\n\n\nvirtual\n\n\n\n\n\n\n\n\n\n \n\n\n\n\nNo matching items"
   },
   {
-    "objectID": "index.html#r-packages",
-    "href": "index.html#r-packages",
-    "title": "Causal Inference in R",
-    "section": "R Packages",
-    "text": "R Packages\nWe develop opinionated R packages to make causal inference in R easier and more principled. Our packages are designed to work well with each other and in the Tidyverse. They’re also quite modular, meaning you can pick and choose the packages you like to work in a wide variety of settings."
-  },
-  {
-    "objectID": "index.html#latest-posts",
-    "href": "index.html#latest-posts",
-    "title": "Causal Inference in R",
-    "section": "Latest posts",
-    "text": "Latest posts\n\n\n\n\n\n\n\n\n\n\nIntroducing halfmoon\n\n\n\n\n\n\nMalcolm Barrett\n\n\nJun 2, 2023\n\n\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "index.html#upcoming-courses",
-    "href": "index.html#upcoming-courses",
-    "title": "Causal Inference in R",
-    "section": "Upcoming courses",
-    "text": "Upcoming courses\n\n\n\n\n\n\n\n\n\n\nposit::conf(2023) Sept 17-18\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNYR Conference: July 13-14\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "posts/visual-diagnostic-tools/index.html",
+    "href": "posts/visual-diagnostic-tools/index.html",
+    "title": "Visual Diagnostic Tools for Causal Inference",
     "section": "",
-    "text": "The r-causal organization is run by Malcolm Barrett, Lucy D’Agostino McGowan, and Travis Gerke, the authors of Causal Inference in R."
+    "text": "Here we are going to look at several diagnostic plots are helpful when attempting to answer a causal question. They can be used to visualize the target population, balance, and treatment effect heterogeneity."
+  },
+  {
+    "objectID": "posts/visual-diagnostic-tools/index.html#setup",
+    "href": "posts/visual-diagnostic-tools/index.html#setup",
+    "title": "Visual Diagnostic Tools for Causal Inference",
+    "section": "Setup",
+    "text": "Setup\nI’ve simulated data to demonstrate the utility of the various plots. In each simulation, we have four pre-treatment variables: var1, var2, var3, and var4, a treatment, t, and an outcome y. I have also fit a propensity score model for each and calculated ATE, ATT, and overlap weights (unsure what these are? Check out this post on propensity score weighting). I will also create three propensity score matched cohorts, each with a different caliper.\nI use the following packages:\n\nlibrary(tidyverse)\nlibrary(propensity)\nlibrary(halfmoon)\nlibrary(MatchIt)\n\n\n\nFor brevity I’ve hidden the simulation code, but if you would like to see it to reproduce the analyses yourself, just click the Code toggle.\n\n\nCode\nset.seed(8)\nn &lt;- 1000\n\n## Main Data ----\n\nvar1 &lt;- rnorm(n, sd = 0.25)\nvar2 &lt;- rnorm(n, sd = 0.25)\nvar3 &lt;- rnorm(n, sd = 0.25)\nvar4 &lt;- rnorm(n, sd = 0.25)\ne_x &lt;- 1 / (1 + exp(-(var1 + var2 + var3 + var4)))\nt &lt;- rbinom(n, 1, e_x)\ny1 &lt;- 0.5 * (var1 + var2 + var3 + var4) + rnorm(n)\ny0 &lt;- - 0.5 * (var1 + var2 + var3 + var4) + rnorm(n)\ny_obs &lt;- t * y1 + (1 - t) * y0\ndata &lt;- data.frame(\n  y = y_obs,\n  t = factor(t), \n  var1, \n  var2,\n  var3,\n  var4\n)\n\ndata &lt;- data |&gt;\n  mutate(p = glm(t ~ var1 + var2 + var3 + var4, data = data, family = binomial) |&gt;\n           predict(type = \"response\"),\n         w_ate = wt_ate(p, t, .treated = 1),\n         w_ato = wt_ato(p, t, .treated = 1),\n         w_att = wt_att(p, t, .treated = 1)\n  ) \n\nmatch_1 &lt;- matchit(t ~ var1 + var2 + var3 + var4, data = data, caliper = 0.1)\nmatch_2 &lt;- matchit(t ~ var1 + var2 + var3 + var4, data = data, caliper = 0.01)\nmatch_3 &lt;- matchit(t ~ var1 + var2 + var3 + var4, data = data, caliper = 0.001)\nmatches &lt;- bind_matches(data, match_1, match_2, match_3)\n\n## Non-linear data ----\n\ne_x &lt;- 1 / (1 + exp(- (var1 + var2 + var3 + 2 * I(var4 &lt; -0.5) + 6 * I(var4 &gt; 0.5))))\nt &lt;- rbinom(n, 1, e_x)\n\ny1 &lt;- 1 + var2 + var2 + var3 + var4 \ny0 &lt;- var1 + var2 + var3 + var4\ny_obs &lt;- t * y1 + (1 - t) * y0\ndata_nonlinear &lt;- data.frame(\n  y = y_obs,\n  t = factor(t), \n  var1, \n  var2,\n  var3,\n  var4\n)\n\ndata_nonlinear &lt;- data_nonlinear |&gt;\n  mutate(p = glm(t ~ var1 + var2 + var3 + var4, data = data_nonlinear, family = binomial) |&gt;\n           predict(type = \"response\"),\n         w_ate = wt_ate(p, t, .treated = 1),\n         w_ato = wt_ato(p, t, .treated = 1),\n         w_att = wt_att(p, t, .treated = 1)\n  ) \n## Positivity violation data ----\n\nset.seed(2186)\nvar4 &lt;- rgamma(n, 1, 1.5)\ne_x &lt;- 1 / (1 + exp(- (var1 + var2 + var3 + var4 + 0.2 * var4^2 + 0.001 * var4^3)))\nt &lt;- rbinom(n, 1, e_x)\n\ndata_positivity &lt;- data.frame(\n  t = factor(t), \n  var1, \n  var2,\n  var3,\n  var4\n)\n\ndata_positivity &lt;- data_positivity |&gt;\n  mutate(p = glm(t ~ var1 + var2 + var3 + poly(var4, 3), data = data_positivity, family = binomial) |&gt;\n           predict(type = \"response\"),\n         w_ate = wt_ate(p, t, .treated = 1),\n         w_ato = wt_ato(p, t, .treated = 1),\n         w_att = wt_att(p, t, .treated = 1)\n  )"
+  },
+  {
+    "objectID": "posts/visual-diagnostic-tools/index.html#target-population",
+    "href": "posts/visual-diagnostic-tools/index.html#target-population",
+    "title": "Visual Diagnostic Tools for Causal Inference",
+    "section": "Target Population",
+    "text": "Target Population\nTargeting different causal estimands will yield different target populations (for a longer discussion of target populations see this post and check out this awesome pre-print by Noah Griefer and Liz Stuart. For example, if you are interested in answering a question with the treated group in mind, an estimand that estimates the average treatment effect among the treated (ATT), will be appropriate. Targeting this estimand will lead to selecting unexposed individuals who match the characterstics of the treated population (whether via matching to these individuals or upweighting them in the sample). Mirrored histograms can be a nice way to visualize the distribution of your target population after incorporating the propensity score when either matching or weighting are used. These basic plots are simply histograms of the propensity score, stratified by exposure. “Mirroring” these histograms above and below the x-axis, can make it easier to compare regions of overlap.\n\nWhat am I looking for?\n\nOverlap: What is the degree of overlap between the exposure groups?\nPositivity violations: Does everyone have a non-zero probability of each level of exposure?\nExtreme weights: Are there any extreme weights that could induce finite sample bias / extreme variance?\n\nLet’s take a look at an example. We can use the halfmoon package to create these.\n\n\nThe cobalt package is another excellent tool that can create many of these plots in R.\nBelow is the basic implementation of this mirrored histogram prior to incorporating the propensity score. On the top half of the visualization, we see the distribution of the propensity score in the treated group (blue); the bottom half displays the distribution among the controls (orange). Looking at this plot, I see good overlap (i.e. the two distributions overlap), and I do not see evidence of positivity violations.\n\nggplot(data, aes(p, fill = t, group = t)) +\n  geom_mirror_histogram(bins = 30) + \n  annotate(\"label\", 0.5, -10, label = \"control\") +\n  annotate(\"label\", 0.5, 10, label = \"treated\") +\n  scale_y_continuous(labels = abs) +\n  labs(x = \"propensity score\",\n       y = \"count\") + \n  theme(legend.position = \"none\")\n\n\n\n\nNow let’s incorporate the propensity score. First, let’s see what this plot looks like if our target population is the whole population, meaning we are interested in estimate the ATE. I have added the following line of code to the ggplot layers below: geom_mirror_histogram(bins = 30, aes(weight = w_ate), alpha = 0.5). Now, I can see the pseudo-population that is created after implementing the propensity score weight. Notice the shape of the distributions match between the two groups (this is what the ATE weight is trying to do!). Looking at the figure below, I also can conclude that there aren’t any extreme weights.\n\nggplot(data, aes(p, fill = t, group = t)) +\n  geom_mirror_histogram(bins = 30, fill = \"grey\") + \n  geom_mirror_histogram(bins = 30, aes(weight = w_ate), alpha = 0.5) + \n  annotate(\"label\", 0.5, -10, label = \"control\") +\n  annotate(\"label\", 0.5, 10, label = \"treated\") +\n  scale_y_continuous(labels = abs) +\n  labs(x = \"propensity score\",\n       fill = \"treatment\",\n       y = \"count\") + \n  theme(legend.position = \"none\")\n\n\n\n\nThese plots can be useful as a pedagogical tool to give a sense for how the different target estimands lead to different target populations. For example, let’s see what the pseudo-population looks like after using the ATT weight. Notice in the figure below, the “weighted” pseudo-population in the treated arm exactly overlaps with the actual distribution of the treated observations – this is exactly what an ATT weight does, everyone in the treated population receives a weight of 1. Now look at the bottom half of the figure – the distribution of the propensity scores in the control group now matches that of the treated – in the regions were there are fewer treated observations, the control observations are down-weighted (where the propensity score is lower) and in the regions where there are more treated observations the control observations are up-weighted (where the propensity score is higher).\n\nggplot(data, aes(p, fill = t, group = t)) +\n  geom_mirror_histogram(bins = 30, fill = \"grey\") + \n  geom_mirror_histogram(bins = 30, aes(weight = w_att), alpha = 0.5) + \n  annotate(\"label\", 0.5, -10, label = \"control\") +\n  annotate(\"label\", 0.5, 10, label = \"treated\") +\n  scale_y_continuous(labels = abs) +\n  labs(x = \"propensity score\",\n       fill = \"treatment\",\n       y = \"count\") + \n  theme(legend.position = \"none\")\n\n\n\n\nFinally, let’s see how an overlap (ATO) weight compares. Notice in the figure below all observations appear to be down-weighted – the overlap weights are bounded by 0 and 1 (which means they have nice variance properties! There is no risk of having an extreme weight!). Also notice the shape of the distribution – it matches between the two groups.\n\nggplot(data, aes(p, fill = t, group = t)) +\n  geom_mirror_histogram(bins = 30, fill = \"grey\") + \n  geom_mirror_histogram(bins = 30, aes(weight = w_ato), alpha = 0.5) + \n  annotate(\"label\", 0.5, -10, label = \"control\") +\n  annotate(\"label\", 0.5, 10, label = \"treated\") +\n  scale_y_continuous(labels = abs) +\n  labs(x = \"propensity score\",\n       fill = \"treatment\",\n       y = \"count\") + \n  theme(legend.position = \"none\")\n\n\n\n\nI like to compare the overlap weights to the distribution after matching with a caliper, as they are both use to estimate a similar estimand. Here, I have created three matched cohorts, each with an increasingly smaller caliper. We can think of matching as an extreme form of weighting, where the observation will receive a weight of 1 if they are in the cohort and 0 otherwise. Here, I have created a dataset called matches that has three columns with these indiciators match_1, match_2, and match_3 (you can see the code above by clicking the Code toggle in the Setup section).\n\n\nPropensity score matching with a caliper means that you only consider matches within a pre-specified distance of each other. Smaller calipers will result in fewer matches.\n\n\nCode\nggplot(matches, aes(p, fill = t, group = t)) +\n  geom_mirror_histogram(bins = 30, fill = \"grey\") + \n  geom_mirror_histogram(bins = 30, aes(weight = match_1), alpha = 0.5) + \n  annotate(\"label\", 0.5, -10, label = \"control\") +\n  annotate(\"label\", 0.5, 10, label = \"treated\") +\n  scale_y_continuous(labels = abs) +\n  labs(x = \"propensity score\",\n       y = \"count\") + \n  theme(legend.position = \"none\")\n\n\n\n\n\nCode\nggplot(matches, aes(p, fill = t, group = t)) +\n  geom_mirror_histogram(bins = 30, fill = \"grey\") + \n  geom_mirror_histogram(bins = 30, aes(weight = match_2), alpha = 0.5) + \n  annotate(\"label\", 0.5, -10, label = \"control\") +\n  annotate(\"label\", 0.5, 10, label = \"treated\") +\n  scale_y_continuous(labels = abs) +\n  labs(x = \"propensity score\",\n       y = \"count\") + \n  theme(legend.position = \"none\")\n\n\n\n\n\nCode\nggplot(matches, aes(p, fill = t, group = t)) +\n  geom_mirror_histogram(bins = 30, fill = \"grey\") + \n  geom_mirror_histogram(bins = 30, aes(weight = match_3), alpha = 0.5) + \n  annotate(\"label\", 0.5, -10, label = \"control\") +\n  annotate(\"label\", 0.5, 10, label = \"treated\") +\n  scale_y_continuous(labels = abs) +\n  labs(x = \"propensity score\",\n       y = \"count\") + \n  theme(legend.position = \"none\")\n\n\n\n\n\nFor demonstration purposes, let’s see what one of these plots looks like in a dataset that doesn’t have perfect overlap. Whoa! Look at that weight in the figure below. This is an example where we see a possible positivity violation (some observations of propensity scores very close to 1) and extreme weights (check out that control with a weight &gt; 500!).\n\nggplot(data_positivity, aes(p, fill = t, group = t)) +\n  geom_mirror_histogram(bins = 30) + \n  geom_mirror_histogram(bins = 30, aes(weight = w_ate), alpha = 0.5) +\n  annotate(\"label\", 0.6, -20, label = \"control\") +\n  annotate(\"label\", 0.6, 20, label = \"treated\") +\n  scale_y_continuous(labels = abs) +\n  labs(x = \"propensity score\",\n       y = \"count\") + \n  theme(legend.position = \"none\")"
+  },
+  {
+    "objectID": "posts/visual-diagnostic-tools/index.html#balance-visualization",
+    "href": "posts/visual-diagnostic-tools/index.html#balance-visualization",
+    "title": "Visual Diagnostic Tools for Causal Inference",
+    "section": "Balance visualization",
+    "text": "Balance visualization\nOk, once we’ve checked out the target population, we can see how balanced the exposure groups are after incorporating the propensity score.\n\nWhat am I looking for?\n\nbalance (in the mean) between treatment groups\nbalance across the distribution (for continuous confounders)\n\n\n\nBalance in the mean\nA common way to look at balance is the standardized mean difference. This will tell us whether the (standardized) means are balanced between the treatment groups (we often target an absolute standardized mean difference less than 0.1 as a rule of thumb). We can use the tidy_smd function to calculate the standardized mean differences between the exposure groups in our example dataset. Let’s see how they compare across the matched datasets.\n\nmatches_smd &lt;- tidy_smd(\n  matches,\n  var1:var4,\n  .group = t,\n  .wts = c(match_1, match_2, match_3)\n)\n\nA nice way to visualize these is a Love Plot (named for Thomas Love, who was one of the first folks to use them). In the halfmoon package there is a geom_love that will help create this as a layer in a ggplot, or you can use the shorthand love_plot. Below we can see that all three matched sets achieve balance with respect to demonstrating standardized mean differences across all pre-treatment variables less than the rule of thumb (0.1). Each of the different “matches” denote a different caliper (from largest: match_1 to smallest: match_3). We see here that using a smaller caliper seems to help balance var2 at the expense of var4 and var1 compared to the larger calipers.\n\nggplot(matches_smd, aes(abs(smd), variable, group = method, color = method)) + \n  geom_love() + \n  labs(x = \"Absolute standardized mean difference\")\n\n\n\n\nLet’s look at another dataset. I have simulated data I am calling data_nonlinear. Let’s check out the Love Plot for this data. This time I will use our propensity score weights.\n\nweighted_smd &lt;- tidy_smd(\n  data_nonlinear,\n  var1:var4,\n  .group = t,\n  .wts = c(w_ate, w_att, w_ato)\n)\n\nggplot(weighted_smd, aes(x = abs(smd), y = variable, group = method, color = method)) + \n  geom_love() +   \n  labs(x = \"Absolute standardized mean difference\")\n\n\n\n\nGreat! Looks like any of our weighting choices will achieve balance on the mean. Check out the green line (the overlap weights) – the standardized mean differences are exactly 0! This is a feature of this weight, if the propensity score is fit using logistic regression, any variables included in the model will be perfectly balanced on the mean – COOL! BUT as you may have guessed by the name of this dataset, the mean does not tell the whole story. These variables are continuous, so being balanced on the mean does not guarantee that the whole distribution is balanced. To examine the distribution of a variable across treatment groups, we can use an empirical cumulative distribution plot."
+  },
+  {
+    "objectID": "posts/visual-diagnostic-tools/index.html#balance-across-the-distribution",
+    "href": "posts/visual-diagnostic-tools/index.html#balance-across-the-distribution",
+    "title": "Visual Diagnostic Tools for Causal Inference",
+    "section": "Balance across the distribution",
+    "text": "Balance across the distribution\nThe geom_ecdf function in the halfmoon package allows for you to visualize weighted empirical CDFs. Let’s first look at the unweighted eCDF for var4. We are going to plot the range of var4 values on the x-axis and the proportion of var4 values that are less than the given x-value on the y-axis (the empirical CDF), stratified by treatment. Looking at the figure below, we see gaps between the lines (meaning the two lines to not overlap, implying that the distributions differ).\n\nggplot(data_nonlinear, aes(x = var4, group = t, color = t)) + \n  geom_ecdf() + \n  labs(y = \"Proportion &lt;= x\") +\n  theme(legend.position = \"none\")\n\n\n\n\nNow we can compare this to the weighted eCDF to see if the propensity score weighting improves the balance – I’ll use the overlap weights for demonstration purposes. Hmm. We can see in the plot below that the lines cross (they are balanced on the mean, we knew that from the Love Plot), but there are still pretty large gaps across other portions of the distribution. This suggests that there are some non-linear effects that the propensity score is failing to capture.\n\nggplot(data_nonlinear, aes(x = var4, group = t, color = t)) + \n  geom_ecdf(aes(weights = w_ato)) + \n  labs(y = \"Proportion &lt;= x\") +\n  theme(legend.position = \"none\")\n\n\n\n\nLet’s try to refit our propensity score model with a spline on the var4 variable, and then recreate our plot.\n\ndata_nonlinear &lt;- data_nonlinear |&gt;\n  mutate(p = glm(t == 1 ~ var1 + var2 + var3 + splines::ns(var4, 4), \n                 data = data_nonlinear) |&gt;\n           predict(type = \"response\"),\n         w_ato = wt_ato(p, t, .treated = 1)) \n\nggplot(data_nonlinear, aes(x = var4, group = t, color = t)) + \n  geom_ecdf(aes(weights = w_ato)) + \n  labs(y = \"Proportion &lt;= x\") +\n  theme(legend.position = \"none\")\n\n\n\n\nMuch better!"
+  },
+  {
+    "objectID": "posts/visual-diagnostic-tools/index.html#heterogeneous-treatment-effect",
+    "href": "posts/visual-diagnostic-tools/index.html#heterogeneous-treatment-effect",
+    "title": "Visual Diagnostic Tools for Causal Inference",
+    "section": "Heterogeneous treatment effect",
+    "text": "Heterogeneous treatment effect\nHere is the last visual! This is a quick plot that can help explore possible treatment heterogeneity.\n\nWhat am I looking for?\n\nDifferences in the treatment effect across the covariate space\n\nIn this example dataset, the average treatment effect is 0. Let’s show that. There are lots of ways to estimate this, for example, we can use the ATE weights.\n\nlm(y ~ t, data = data, weight = w_ate)\n\n\nCall:\nlm(formula = y ~ t, data = data, weights = w_ate)\n\nCoefficients:\n(Intercept)           t1  \n   -0.02095     -0.05364  \n\n\nAwesome! Now let’s create a plot to see if this effect is constant across the covariate space. One way to summarize the “covariate space” is the propensity score! This simple plot has the propensity score on the x-axis and the outcome on the y-axis. We then stratify by the treatment and look at a smoothed line in both groups.\n\nggplot(data, aes(x = p, y = y, color = t)) +\n  geom_point(alpha = 0.5) + \n  geom_smooth(method = \"loess\", formula = \"y ~ x\") + \n  labs(x = \"Propensity score\",\n       color = \"Treated\")\n\n\n\n\nThe lines cross! This indicates that there is treatment effect heterogeneity (in this particular case, when the propensity score is greater than 0.5, there is a positive treatment effect, and when less than 0.5 there is a negative treatment effect).\n\n\nYou can find a longer post about these plots here.\nJust to see what it looks like when there is not a heterogeneous treatment effect, let’s check out the data_nonlinear dataset (where I simulated a constant effect). Notice below the lines don’t cross, the width between them is constant across the covariate space.\n\nggplot(data_nonlinear, aes(x = p, y = y, color = t)) +\n  geom_point(alpha = 0.5) + \n  geom_smooth(method = \"loess\", formula = \"y ~ x\", span = 50)"
+  },
+  {
+    "objectID": "posts/visual-diagnostic-tools/index.html#wrap-up",
+    "href": "posts/visual-diagnostic-tools/index.html#wrap-up",
+    "title": "Visual Diagnostic Tools for Causal Inference",
+    "section": "Wrap up",
+    "text": "Wrap up\nSo there you have it! Four visualizations to add to your tool kit when attempting to answer causal questions.\nThis post is cross-posted on Lucy’s blog, livefreeordichotomize.com"
   },
   {
     "objectID": "courses/posit-conf-2023/index.html",
@@ -112,17 +168,10 @@
     "text": "Join us for a two-day workshop at the posit::conf(2023) conference! Available in-person.\n\nTo learn more about our workshop, visit the GitHub repository containing materials you’ll learn."
   },
   {
-    "objectID": "courses/nyr-2023/index.html",
-    "href": "courses/nyr-2023/index.html",
-    "title": "NYR Conference: July 13-14",
-    "section": "",
-    "text": "Join us for a two-day workshop at the New York R conference! Available in-person and virtual."
-  },
-  {
     "objectID": "posts.html",
     "href": "posts.html",
     "title": "Blog",
     "section": "",
-    "text": "Introducing halfmoon\n\n\n\n\n\n\n\nhalfmoon\n\n\nbalance\n\n\npackages\n\n\n\n\n\n\n\n\n\n\n\nJun 2, 2023\n\n\nMalcolm Barrett\n\n\n\n\n\n\nNo matching items"
+    "text": "Visual Diagnostic Tools for Causal Inference\n\n\n\n\n\n\n\nhalfmoon\n\n\nbalance\n\n\nheterogeneous treatment effects\n\n\n\n\n\n\n\n\n\n\n\nAug 4, 2023\n\n\nLucy D’Agostino McGowan\n\n\n\n\n\n\n  \n\n\n\n\nIntroducing halfmoon\n\n\n\n\n\n\n\nhalfmoon\n\n\nbalance\n\n\npackages\n\n\n\n\n\n\n\n\n\n\n\nJun 2, 2023\n\n\nMalcolm Barrett\n\n\n\n\n\n\nNo matching items"
   }
 ]
