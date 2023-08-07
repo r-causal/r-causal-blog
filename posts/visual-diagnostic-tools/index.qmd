@@ -6,7 +6,7 @@ categories: [halfmoon, balance, heterogeneous treatment effects]
 image: "image.png"
 ---
 
-Here we are going to look at several diagnostic plots are helpful when attempting to answer a causal question. They can be used to visualize the target population, balance, and treatment effect heterogeneity.
+Here we are going to look at several diagnostic plots that are helpful when attempting to answer a causal question. They can be used to visualize the target population, balance, and treatment effect heterogeneity.
 
 ## Setup 
 

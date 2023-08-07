@@ -196,7 +196,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p>Here we are going to look at several diagnostic plots are helpful when attempting to answer a causal question. They can be used to visualize the target population, balance, and treatment effect heterogeneity.</p>
+<p>Here we are going to look at several diagnostic plots that are helpful when attempting to answer a causal question. They can be used to visualize the target population, balance, and treatment effect heterogeneity.</p>
 <section id="setup" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
 <p>I’ve simulated data to demonstrate the utility of the various plots. In each simulation, we have four pre-treatment variables: <code>var1</code>, <code>var2</code>, <code>var3</code>, and <code>var4</code>, a treatment, <code>t</code>, and an outcome <code>y</code>. I have also fit a propensity score model for each and calculated ATE, ATT, and overlap weights (unsure what these are? <a href="https://livefreeordichotomize.com/posts/2019-01-17-understanding-propensity-score-weighting/">Check out this post on propensity score weighting</a>). I will also create three propensity score matched cohorts, each with a different caliper.</p>

@@ -116,7 +116,7 @@
     "href": "posts/visual-diagnostic-tools/index.html",
     "title": "Visual Diagnostic Tools for Causal Inference",
     "section": "",
-    "text": "Here we are going to look at several diagnostic plots are helpful when attempting to answer a causal question. They can be used to visualize the target population, balance, and treatment effect heterogeneity."
+    "text": "Here we are going to look at several diagnostic plots that are helpful when attempting to answer a causal question. They can be used to visualize the target population, balance, and treatment effect heterogeneity."
   },
   {
     "objectID": "posts/visual-diagnostic-tools/index.html#setup",
