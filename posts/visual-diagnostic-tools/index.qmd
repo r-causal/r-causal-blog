@@ -361,7 +361,7 @@ Just to see what it looks like when there is *not* a heterogeneous treatment eff
 ```{r}
 ggplot(data_nonlinear, aes(x = p, y = y, color = t)) +
   geom_point(alpha = 0.5) + 
-  geom_smooth(method = "loess", formula = "y ~ x", span = 50)
+  geom_smooth(method = "lm", formula = "y ~ x", span = 50)
 ```
 
 
