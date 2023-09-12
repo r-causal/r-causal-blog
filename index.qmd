@@ -40,43 +40,7 @@ We develop opinionated R packages to make causal inference in R easier and more 
 Our packages are designed to work well with each other and in the [Tidyverse](https://www.tidyverse.org/).
 They're also quite modular, meaning you can pick and choose the packages you like to work in a wide variety of settings. You can find the source code for these packages on our [GitHub organization](https://github.com/r-causal).
 
-<<<<<<< HEAD
-<ul id="hexGrid">
-
-<li class="hex">
-
-<a class="hexIn" href="https://r-causal.github.io/halfmoon"> <img src="img/halfmoon.png"/> </a>
-
-</li>
-
-<li class="hex">
-
-<a class="hexIn" href="https://r-causal.github.io/propensity"> <img src="img/propensity.png"/> </a>
-
-</li>
-
-<li class="hex">
-
-<a class="hexIn" href="https://r-causal.github.io/tipr"> <img src="img/tipr.png"/> </a>
-
-</li>
-
-<li class="hex">
-
-<a class="hexIn" href="https://r-causal.github.io/quartets"> <img src="img/quartets.png"/> </a>
-
-</li>
-
-<li class="hex">
-
-<a class="hexIn" href="https://r-causal.github.io/ggdag"> <img src="img/ggdag.png"/> </a>
-
-</li>
-
-</ul>
-=======
 ![](img/hex_grid.png){fig-alt="A drawing of an elephant." fig-align="center" width=75% height=75%}
->>>>>>> 60e1b67 (update hexes)
 
 ## [Latest posts](posts.qmd)
 
