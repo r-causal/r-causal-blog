@@ -1,14 +1,5 @@
 [
   {
-    "listing": "/index.html",
-    "items": [
-      "/posts/visual-diagnostic-tools/index.html",
-      "/posts/introducing-halfmoon/index.html",
-      "/courses/posit-conf-2023/index.html",
-      "/courses/nyr-2023/index.html"
-    ]
-  },
-  {
     "listing": "/posts.html",
     "items": [
       "/posts/visual-diagnostic-tools/index.html",
@@ -16,10 +7,19 @@
     ]
   },
   {
+    "listing": "/index.html",
+    "items": [
+      "/posts/visual-diagnostic-tools/index.html",
+      "/posts/introducing-halfmoon/index.html",
+      "/courses/nyr-2023/index.html",
+      "/courses/posit-conf-2023/index.html"
+    ]
+  },
+  {
     "listing": "/courses.html",
     "items": [
-      "/courses/posit-conf-2023/index.html",
-      "/courses/nyr-2023/index.html"
+      "/courses/nyr-2023/index.html",
+      "/courses/posit-conf-2023/index.html"
     ]
   }
 ]
