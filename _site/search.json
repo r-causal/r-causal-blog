@@ -109,12 +109,42 @@
     "href": "courses.html",
     "title": "Upcoming Courses",
     "section": "",
+<<<<<<< HEAD
     "text": "posit::conf(2023) Sept 17-18\n\n\n\n\n\n\n\ntwo-day workshop\n\n\nposit::conf\n\n\nin-person\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nNYR Conference: July 13-14\n\n\n\n\n\n\n\ntwo-day workshop\n\n\nnyr\n\n\nin-person\n\n\nvirtual\n\n\n\n\n\n\n\n\n\n \n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/visual-diagnostic-tools/index.html",
     "href": "posts/visual-diagnostic-tools/index.html",
     "title": "Visual Diagnostic Tools for Causal Inference",
+=======
+    "text": "Welcome to the Causal Inference in R Blog! Here you’ll find more information about our packages, book, courses, and other information about causal inference.\nIf you’re looking for our book or workshop website, you can find them here:"
+  },
+  {
+    "objectID": "index.html#r-packages",
+    "href": "index.html#r-packages",
+    "title": "Causal Inference in R",
+    "section": "R Packages",
+    "text": "R Packages\nWe develop opinionated R packages to make causal inference in R easier and more principled. Our packages are designed to work well with each other and in the Tidyverse. They’re also quite modular, meaning you can pick and choose the packages you like to work in a wide variety of settings. You can find the source code for these packages on our GitHub organization."
+  },
+  {
+    "objectID": "index.html#latest-posts",
+    "href": "index.html#latest-posts",
+    "title": "Causal Inference in R",
+    "section": "Latest posts",
+    "text": "Latest posts\n\n\n\n\n\n\n\n\n\n\nIntroducing halfmoon\n\n\n\n\n\n\nMalcolm Barrett\n\n\nJun 2, 2023\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html#upcoming-courses",
+    "href": "index.html#upcoming-courses",
+    "title": "Causal Inference in R",
+    "section": "Upcoming courses",
+    "text": "Upcoming courses\n\n\n\n\n\n\n\n\n\n\nposit::conf(2023) Sept 17-18\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNYR Conference: July 13-14\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+>>>>>>> 60e1b67 (update hexes)
     "section": "",
     "text": "Here we are going to look at several diagnostic plots that are helpful when attempting to answer a causal question. They can be used to visualize the target population, balance, and treatment effect heterogeneity."
   },
@@ -172,6 +202,17 @@
     "href": "posts.html",
     "title": "Blog",
     "section": "",
+<<<<<<< HEAD
     "text": "Visual Diagnostic Tools for Causal Inference\n\n\n\n\n\n\n\nhalfmoon\n\n\nbalance\n\n\nheterogeneous treatment effects\n\n\n\n\n\n\n\n\n\n\n\nAug 4, 2023\n\n\nLucy D’Agostino McGowan\n\n\n\n\n\n\n  \n\n\n\n\nIntroducing halfmoon\n\n\n\n\n\n\n\nhalfmoon\n\n\nbalance\n\n\npackages\n\n\n\n\n\n\n\n\n\n\n\nJun 2, 2023\n\n\nMalcolm Barrett\n\n\n\n\n\n\nNo matching items"
+=======
+    "text": "Introducing halfmoon\n\n\n\n\n\n\n\nhalfmoon\n\n\nbalance\n\n\npackages\n\n\n\n\n\n\n\n\n\n\n\nJun 2, 2023\n\n\nMalcolm Barrett\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html#section",
+    "href": "index.html#section",
+    "title": "Causal Inference in R",
+    "section": "",
+    "text": "Welcome to the Causal Inference in R Blog! Here you’ll find more information about our packages, book, courses, and other information about causal inference."
+>>>>>>> 60e1b67 (update hexes)
   }
 ]

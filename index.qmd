@@ -23,12 +23,24 @@ listing:
     feed: false
 ---
 
-Welcome to the Causal Inference in R Blog! Here you'll find more information about our packages, book, courses, and other information about causal inference.
+<img src="img/r-causal-hex.png" align="right" height="138" style="filter: drop-shadow(3px 3px 4px grey)
+" />
+
+Welcome to the Causal Inference in R Blog!
+Here you'll find more information about our packages, book, courses, and other information about causal inference. 
+
+If you're looking for our book or workshop website, you can find them here:
+
+* [Book](https://www.r-causal.org/)
+* [Workshop](https://r-causal.github.io/causal_workshop_website/)
 
 ## R Packages
 
-We develop opinionated R packages to make causal inference in R easier and more principled. Our packages are designed to work well with each other and in the [Tidyverse](https://www.tidyverse.org/). They're also quite modular, meaning you can pick and choose the packages you like to work in a wide variety of settings.
+We develop opinionated R packages to make causal inference in R easier and more principled.
+Our packages are designed to work well with each other and in the [Tidyverse](https://www.tidyverse.org/).
+They're also quite modular, meaning you can pick and choose the packages you like to work in a wide variety of settings. You can find the source code for these packages on our [GitHub organization](https://github.com/r-causal).
 
+<<<<<<< HEAD
 <ul id="hexGrid">
 
 <li class="hex">
@@ -62,6 +74,9 @@ We develop opinionated R packages to make causal inference in R easier and more 
 </li>
 
 </ul>
+=======
+![](img/hex_grid.png){fig-alt="A drawing of an elephant." fig-align="center" width=75% height=75%}
+>>>>>>> 60e1b67 (update hexes)
 
 ## [Latest posts](posts.qmd)
 
