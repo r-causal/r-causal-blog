@@ -7,19 +7,42 @@
     ]
   },
   {
+    "listing": "/courses/posit-conf-2023/index.html",
+    "items": []
+  },
+  {
+    "listing": "/about.html",
+    "items": [
+      "/posts/introducing-halfmoon/index.html",
+      "/posts/visual-diagnostic-tools/index.html"
+    ]
+  },
+  {
+    "listing": "/posts/introducing-halfmoon/index.html",
+    "items": []
+  },
+  {
     "listing": "/index.html",
     "items": [
-      "/posts/visual-diagnostic-tools/index.html",
       "/posts/introducing-halfmoon/index.html",
-      "/courses/nyr-2023/index.html",
-      "/courses/posit-conf-2023/index.html"
+      "/posts/visual-diagnostic-tools/index.html",
+      "/courses/posit-conf-2023/index.html",
+      "/courses/nyr-2023/index.html"
     ]
+  },
+  {
+    "listing": "/posts/visual-diagnostic-tools/index.html",
+    "items": []
   },
   {
     "listing": "/courses.html",
     "items": [
-      "/courses/nyr-2023/index.html",
-      "/courses/posit-conf-2023/index.html"
+      "/courses/posit-conf-2023/index.html",
+      "/courses/nyr-2023/index.html"
     ]
+  },
+  {
+    "listing": "/courses/nyr-2023/index.html",
+    "items": []
   }
 ]

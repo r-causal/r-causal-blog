@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://github.com/r-causal/r-causal-blog/posts.html</loc>
-    <lastmod>2023-09-12T17:40:05.755Z</lastmod>
+    <loc>https://r-causal.github.io/r-causal-blog/posts.html</loc>
+    <lastmod>2023-09-13T20:23:15.993Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/r-causal/r-causal-blog/about.html</loc>
-    <lastmod>2023-09-12T17:40:04.935Z</lastmod>
+    <loc>https://r-causal.github.io/r-causal-blog/courses/posit-conf-2023/index.html</loc>
+    <lastmod>2023-09-13T20:23:15.265Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/r-causal/r-causal-blog/courses/nyr-2023/index.html</loc>
-    <lastmod>2023-09-12T17:40:04.391Z</lastmod>
+    <loc>https://r-causal.github.io/r-causal-blog/about.html</loc>
+    <lastmod>2023-09-13T20:23:14.549Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/r-causal/r-causal-blog/posts/introducing-halfmoon/index.html</loc>
-    <lastmod>2023-09-12T17:40:03.091Z</lastmod>
+    <loc>https://r-causal.github.io/r-causal-blog/posts/introducing-halfmoon/index.html</loc>
+    <lastmod>2023-09-13T20:23:12.773Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/r-causal/r-causal-blog/index.html</loc>
-    <lastmod>2023-09-12T17:40:02.015Z</lastmod>
+    <loc>https://r-causal.github.io/r-causal-blog/index.html</loc>
+    <lastmod>2023-09-13T20:23:11.017Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/r-causal/r-causal-blog/posts/visual-diagnostic-tools/index.html</loc>
-    <lastmod>2023-09-12T17:40:04.087Z</lastmod>
+    <loc>https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index.html</loc>
+    <lastmod>2023-09-13T20:23:14.149Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/r-causal/r-causal-blog/courses/posit-conf-2023/index.html</loc>
-    <lastmod>2023-09-12T17:40:04.663Z</lastmod>
+    <loc>https://r-causal.github.io/r-causal-blog/courses.html</loc>
+    <lastmod>2023-09-13T20:23:14.977Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/r-causal/r-causal-blog/courses.html</loc>
-    <lastmod>2023-09-12T17:40:05.335Z</lastmod>
+    <loc>https://r-causal.github.io/r-causal-blog/courses/nyr-2023/index.html</loc>
+    <lastmod>2023-09-13T20:23:15.553Z</lastmod>
   </url>
 </urlset>

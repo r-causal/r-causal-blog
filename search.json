@@ -7,18 +7,18 @@
     "text": "Visual Diagnostic Tools for Causal Inference\n\n\n\n\n\n\n\nhalfmoon\n\n\nbalance\n\n\nheterogeneous treatment effects\n\n\n\n\n\n\n\n\n\n\n\nAug 4, 2023\n\n\nLucy D’Agostino McGowan\n\n\n\n\n\n\n  \n\n\n\n\nIntroducing halfmoon\n\n\n\n\n\n\n\nhalfmoon\n\n\nbalance\n\n\npackages\n\n\n\n\n\n\n\n\n\n\n\nJun 2, 2023\n\n\nMalcolm Barrett\n\n\n\n\n\n\nNo matching items"
   },
   {
+    "objectID": "courses/posit-conf-2023/index.html",
+    "href": "courses/posit-conf-2023/index.html",
+    "title": "posit::conf(2023) Sept 17-18",
+    "section": "",
+    "text": "Join us for a two-day workshop at the posit::conf(2023) conference! Available in-person.\n\nTo learn more about our workshop, visit the GitHub repository containing materials you’ll learn.\n\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "The r-causal organization is run by Malcolm Barrett, Lucy D’Agostino McGowan, and Travis Gerke, the authors of Causal Inference in R."
-  },
-  {
-    "objectID": "courses/nyr-2023/index.html",
-    "href": "courses/nyr-2023/index.html",
-    "title": "NYR Conference: July 13-14",
-    "section": "",
-    "text": "Join us for a two-day workshop at the New York R conference! Available in-person and virtual."
+    "text": "The r-causal organization is run by Malcolm Barrett, Lucy D’Agostino McGowan, and Travis Gerke, the authors of Causal Inference in R.\n\n\n\n\n\n\n  \n\n\n\n\nIntroducing halfmoon\n\n\n\n\n\n\n\n\n\n\n\nJun 2, 2023\n\n\nMalcolm Barrett\n\n\n\n\n\n\n  \n\n\n\n\nVisual Diagnostic Tools for Causal Inference\n\n\n\n\n\n\n\n\n\n\n\nAug 4, 2023\n\n\nLucy D’Agostino McGowan\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/introducing-halfmoon/index.html",
@@ -116,7 +116,7 @@
     "href": "index.html#upcoming-courses",
     "title": "Causal Inference in R",
     "section": "Upcoming courses",
-    "text": "Upcoming courses\n\n\n\n\n\n\n\n\n\n\nNYR Conference: July 13-14\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nposit::conf(2023) Sept 17-18\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "Upcoming courses\n\n\n\n\n\n\n\n\n\n\nposit::conf(2023) Sept 17-18\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNYR Conference: July 13-14\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/visual-diagnostic-tools/index.html",
@@ -168,17 +168,17 @@
     "text": "Wrap up\nSo there you have it! Four visualizations to add to your tool kit when attempting to answer causal questions.\nThis post is cross-posted on Lucy’s blog, livefreeordichotomize.com"
   },
   {
-    "objectID": "courses/posit-conf-2023/index.html",
-    "href": "courses/posit-conf-2023/index.html",
-    "title": "posit::conf(2023) Sept 17-18",
-    "section": "",
-    "text": "Join us for a two-day workshop at the posit::conf(2023) conference! Available in-person.\n\nTo learn more about our workshop, visit the GitHub repository containing materials you’ll learn."
-  },
-  {
     "objectID": "courses.html",
     "href": "courses.html",
     "title": "Upcoming Courses",
     "section": "",
-    "text": "NYR Conference: July 13-14\n\n\n\n\n\n\n\ntwo-day workshop\n\n\nnyr\n\n\nin-person\n\n\nvirtual\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nposit::conf(2023) Sept 17-18\n\n\n\n\n\n\n\ntwo-day workshop\n\n\nposit::conf\n\n\nin-person\n\n\n\n\n\n\n\n\n\n \n\n\n\n\nNo matching items"
+    "text": "posit::conf(2023) Sept 17-18\n\n\n\n\n\n\n\ntwo-day workshop\n\n\nposit::conf\n\n\nin-person\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nNYR Conference: July 13-14\n\n\n\n\n\n\n\ntwo-day workshop\n\n\nnyr\n\n\nin-person\n\n\nvirtual\n\n\n\n\n\n\n\n\n\n \n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "courses/nyr-2023/index.html",
+    "href": "courses/nyr-2023/index.html",
+    "title": "NYR Conference: July 13-14",
+    "section": "",
+    "text": "Join us for a two-day workshop at the New York R conference! Available in-person and virtual.\n\n\n\n\n\n\n\n\n\n\nNo matching items"
   }
 ]

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Causal Inference in R</title>
+<link>https://r-causal.github.io/r-causal-blog/courses.html</link>
+<atom:link href="https://r-causal.github.io/r-causal-blog/courses.xml" rel="self" type="application/rss+xml"/>
+<description></description>
+<generator>quarto-1.3.450</generator>
+<lastBuildDate>Wed, 13 Sep 2023 20:23:14 GMT</lastBuildDate>
+<item>
+  <title>posit::conf(2023) Sept 17-18</title>
+  <link>https://r-causal.github.io/r-causal-blog/courses/posit-conf-2023/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>Join us for a <a href="https://reg.conf.posit.co/flow/posit/positconf23/attendee-portal/page/sessioncatalog?search=causal&amp;search.sessiontype=1675316728702001wr6r">two-day workshop</a> at the <a href="https://posit.co/conference/">posit::conf(2023)</a> conference! Available in-person.</p>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/x4TKX3Ci41c" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<p>To learn more about our workshop, visit the <a href="https://github.com/r-causal/causal_inference_r_workshop">GitHub repository</a> containing materials you’ll learn.</p>
+
+
+
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div> ]]></description>
+  <category>two-day workshop</category>
+  <category>posit::conf</category>
+  <category>in-person</category>
+  <guid>https://r-causal.github.io/r-causal-blog/courses/posit-conf-2023/index.html</guid>
+  <pubDate>Wed, 13 Sep 2023 20:23:14 GMT</pubDate>
+  <media:content url="https://r-causal.github.io/r-causal-blog/courses/posit-conf-2023/image.jpeg" medium="image" type="image/jpeg"/>
+</item>
+<item>
+  <title>NYR Conference: July 13-14</title>
+  <link>https://r-causal.github.io/r-causal-blog/courses/nyr-2023/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>Join us for a <a href="https://rstats.ai/nyr.html#causal-inference-in-r">two-day workshop</a> at the <a href="https://rstats.ai/nyr.html">New York R conference</a>! Available in-person and virtual.</p>
+<p><img src="https://r-causal.github.io/r-causal-blog/courses/nyr-2023/image.png" class="img-fluid"></p>
+
+
+
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div> ]]></description>
+  <category>two-day workshop</category>
+  <category>nyr</category>
+  <category>in-person</category>
+  <category>virtual</category>
+  <guid>https://r-causal.github.io/r-causal-blog/courses/nyr-2023/index.html</guid>
+  <pubDate>Wed, 13 Sep 2023 20:23:14 GMT</pubDate>
+  <media:content url="https://r-causal.github.io/r-causal-blog/courses/nyr-2023/image.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
+</channel>
+</rss>

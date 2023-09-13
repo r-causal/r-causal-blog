@@ -1,1 +1,1 @@
-Sitemap: https://github.com/r-causal/r-causal-blog/sitemap.xml
+Sitemap: https://r-causal.github.io/r-causal-blog/sitemap.xml
