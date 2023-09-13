@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.67">
+<meta name="generator" content="quarto-1.4.358">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -30,6 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-listing/list.min.js"></script>
+<script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -45,6 +47,12 @@ ul.task-list li input[type="checkbox"] {
   "panel-placement": "end",
   "type": "overlay",
   "limit": 20,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -54,13 +62,45 @@ ul.task-list li input[type="checkbox"] {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
+<script>
 
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="styles.css">
-</head>
+<link rel="alternate" type="application/rss+xml" title="Causal Inference in R" href="about.xml" data-external="1"></head>
 
 <body class="nav-fixed fullcontent">
 
@@ -68,7 +108,7 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Causal Inference in R</span>
     </a>
@@ -80,30 +120,30 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="https://www.r-causal.org/" rel="" target="">
- <span class="menu-text">Read the Book</span></a>
+    <a class="nav-link" href="https://www.r-causal.org/"> 
+<span class="menu-text">Read the Book</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./posts.html" rel="" target="">
- <span class="menu-text">Blog</span></a>
+    <a class="nav-link" href="./posts.html"> 
+<span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./courses.html" rel="" target="">
- <span class="menu-text">Upcoming Courses</span></a>
+    <a class="nav-link" href="./courses.html"> 
+<span class="menu-text">Upcoming Courses</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./about.html" rel="" target="" aria-current="page">
- <span class="menu-text">About</span></a>
+    <a class="nav-link active" href="./about.html" aria-current="page"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/r-causal" rel="" target=""><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/r-causal"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -124,7 +164,71 @@ ul.task-list li input[type="checkbox"] {
 <p>The <code>r-causal</code> organization is run by <a href="https://malco.io/">Malcolm Barrett</a>, <a href="https://www.lucymcgowan.com/">Lucy D’Agostino McGowan</a>, and <a href="https://travisgerke.com/">Travis Gerke</a>, the authors of <a href="https://www.r-causal.org/">Causal Inference in R</a>.</p>
 
 
-</main> 
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-categories="halfmoon,balance,packages" data-listing-date-sort="1685678400000" data-listing-file-modified-sort="1685905066584" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1394">
+<div class="thumbnail">
+<p><a href="./posts/introducing-halfmoon/index.html"></a></p><a href="./posts/introducing-halfmoon/index.html">
+<p><img src="./posts/introducing-halfmoon/image.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/introducing-halfmoon/index.html"></a></p>
+</div>
+<div class="body">
+<p><a href="./posts/introducing-halfmoon/index.html"></a></p><a href="./posts/introducing-halfmoon/index.html">
+<h3 class="no-anchor listing-title">
+Introducing halfmoon
+</h3>
+<div class="listing-subtitle">
+</div>
+<div class="listing-description">
+We’re thrilled to announce the initial release of the halfmoon package to CRAN! halfmoon is a toolkit to assess balance in propensity-based models.
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/introducing-halfmoon/index.html">
+<div class="listing-date">
+Jun 2, 2023
+</div>
+<div class="listing-author">
+Malcolm Barrett
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="halfmoon,balance,heterogeneous treatment effects" data-listing-date-sort="1691121600000" data-listing-file-modified-sort="1694539629780" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="16" data-listing-word-count-sort="3087">
+<div class="thumbnail">
+<p><a href="./posts/visual-diagnostic-tools/index.html"></a></p><a href="./posts/visual-diagnostic-tools/index.html">
+<p><img src="./posts/visual-diagnostic-tools/image.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/visual-diagnostic-tools/index.html"></a></p>
+</div>
+<div class="body">
+<p><a href="./posts/visual-diagnostic-tools/index.html"></a></p><a href="./posts/visual-diagnostic-tools/index.html">
+<h3 class="no-anchor listing-title">
+Visual Diagnostic Tools for Causal Inference
+</h3>
+<div class="listing-subtitle">
+</div>
+<div class="listing-description">
+Here we are going to look at several diagnostic plots that are helpful when attempting to answer a causal question. They can be used to visualize the target population…
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/visual-diagnostic-tools/index.html">
+<div class="listing-date">
+Aug 4, 2023
+</div>
+<div class="listing-author">
+Lucy D’Agostino McGowan
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div></main> 
   <hr class="about-sep">
    <div class="about-links">
   <a href="https://github.com/r-causal" class="about-link" rel="" target="">
@@ -134,6 +238,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
  <!-- /main -->
+<script defer="" data-domain="r-causal.github.io/r-causal-blog" src="https://plausible.io/js/script.js"></script>
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -206,10 +311,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -219,8 +323,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -236,31 +349,78 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        return container.innerHTML
+      } else {
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      return note.innerHTML;
+    }
+  }
   for (var i=0; i<xrefs.length; i++) {
     const xref = xrefs[i];
-    tippyHover(xref, function() {
-      let href = xref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note !== null) {
-        if (id.startsWith('sec-')) {
-          // Special case sections, only their first couple elements
-          const container = document.createElement("div");
-          if (note.children && note.children.length > 2) {
-            for (let i = 0; i < 2; i++) {
-              container.appendChild(note.children[i].cloneNode(true));
-            }
-            return container.innerHTML
-          } else {
-            return note.innerHTML;
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
           }
         } else {
-          return note.innerHTML;
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
         }
-      } else {
-        return "";
       }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -304,6 +464,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -329,6 +490,33 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        console.log("RESIZE");
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -389,6 +577,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 
