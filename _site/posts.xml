@@ -1,0 +1,2676 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Causal Inference in R</title>
+<link>https://r-causal.github.io/r-causal-blog/posts.html</link>
+<atom:link href="https://r-causal.github.io/r-causal-blog/posts.xml" rel="self" type="application/rss+xml"/>
+<description></description>
+<generator>quarto-1.4.358</generator>
+<lastBuildDate>Fri, 04 Aug 2023 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>Visual Diagnostic Tools for Causal Inference</title>
+  <dc:creator>Lucy D&#39;Agostino McGowan</dc:creator>
+  <link>https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>Here we are going to look at several diagnostic plots that are helpful when attempting to answer a causal question. They can be used to visualize the target population, balance, and treatment effect heterogeneity.</p>
+<section id="setup" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<p>I’ve simulated data to demonstrate the utility of the various plots. In each simulation, we have four pre-treatment variables: <code>var1</code>, <code>var2</code>, <code>var3</code>, and <code>var4</code>, a treatment, <code>t</code>, and an outcome <code>y</code>. I have also fit a propensity score model for each and calculated ATE, ATT, and overlap weights (unsure what these are? <a href="https://livefreeordichotomize.com/posts/2019-01-17-understanding-propensity-score-weighting/">Check out this post on propensity score weighting</a>). I will also create three propensity score matched cohorts, each with a different caliper.</p>
+<p>I use the following packages:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tidyverse)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(propensity)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(halfmoon)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(MatchIt)</span></code></pre></div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>For brevity I’ve hidden the simulation code, but if you would like to see it to reproduce the analyses yourself, just click the <strong>Code</strong> toggle.</p>
+</div></div><div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>)</span>
+<span id="cb2-2">n <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span></span>
+<span id="cb2-3"></span>
+<span id="cb2-4"><span class="do" style="color: #5E5E5E;
+background-color: null;
+font-style: italic;">## Main Data ----</span></span>
+<span id="cb2-5"></span>
+<span id="cb2-6">var1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">sd =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.25</span>)</span>
+<span id="cb2-7">var2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">sd =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.25</span>)</span>
+<span id="cb2-8">var3 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">sd =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.25</span>)</span>
+<span id="cb2-9">var4 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">sd =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.25</span>)</span>
+<span id="cb2-10">e_x <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>(var1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var4)))</span>
+<span id="cb2-11">t <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rbinom</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, e_x)</span>
+<span id="cb2-12">y1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> (var1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var4) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n)</span>
+<span id="cb2-13">y0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> (var1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var4) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n)</span>
+<span id="cb2-14">y_obs <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> t <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> y1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> t) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> y0</span>
+<span id="cb2-15">data <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(</span>
+<span id="cb2-16">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> y_obs,</span>
+<span id="cb2-17">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">t =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor</span>(t), </span>
+<span id="cb2-18">  var1, </span>
+<span id="cb2-19">  var2,</span>
+<span id="cb2-20">  var3,</span>
+<span id="cb2-21">  var4</span>
+<span id="cb2-22">)</span>
+<span id="cb2-23"></span>
+<span id="cb2-24">data <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> data <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb2-25">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">p =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glm</span>(t <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> var1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var4, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> binomial) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb2-26">           <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predict</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"response"</span>),</span>
+<span id="cb2-27">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">w_ate =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">wt_ate</span>(p, t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.treated =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb2-28">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">w_ato =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">wt_ato</span>(p, t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.treated =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb2-29">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">w_att =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">wt_att</span>(p, t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.treated =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb2-30">  ) </span>
+<span id="cb2-31"></span>
+<span id="cb2-32">match_1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matchit</span>(t <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> var1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var4, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caliper =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>)</span>
+<span id="cb2-33">match_2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matchit</span>(t <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> var1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var4, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caliper =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>)</span>
+<span id="cb2-34">match_3 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matchit</span>(t <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> var1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var4, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caliper =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.001</span>)</span>
+<span id="cb2-35">matches <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">bind_matches</span>(data, match_1, match_2, match_3)</span>
+<span id="cb2-36"></span>
+<span id="cb2-37"><span class="do" style="color: #5E5E5E;
+background-color: null;
+font-style: italic;">## Non-linear data ----</span></span>
+<span id="cb2-38"></span>
+<span id="cb2-39">e_x <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (var1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">I</span>(var4 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">I</span>(var4 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>))))</span>
+<span id="cb2-40">t <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rbinom</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, e_x)</span>
+<span id="cb2-41"></span>
+<span id="cb2-42">y1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var4 </span>
+<span id="cb2-43">y0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> var1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var4</span>
+<span id="cb2-44">y_obs <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> t <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> y1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> t) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> y0</span>
+<span id="cb2-45">data_nonlinear <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(</span>
+<span id="cb2-46">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> y_obs,</span>
+<span id="cb2-47">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">t =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor</span>(t), </span>
+<span id="cb2-48">  var1, </span>
+<span id="cb2-49">  var2,</span>
+<span id="cb2-50">  var3,</span>
+<span id="cb2-51">  var4</span>
+<span id="cb2-52">)</span>
+<span id="cb2-53"></span>
+<span id="cb2-54">data_nonlinear <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> data_nonlinear <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb2-55">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">p =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glm</span>(t <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> var1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var4, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_nonlinear, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> binomial) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb2-56">           <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predict</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"response"</span>),</span>
+<span id="cb2-57">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">w_ate =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">wt_ate</span>(p, t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.treated =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb2-58">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">w_ato =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">wt_ato</span>(p, t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.treated =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb2-59">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">w_att =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">wt_att</span>(p, t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.treated =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb2-60">  ) </span>
+<span id="cb2-61"><span class="do" style="color: #5E5E5E;
+background-color: null;
+font-style: italic;">## Positivity violation data ----</span></span>
+<span id="cb2-62"></span>
+<span id="cb2-63"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set.seed</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2186</span>)</span>
+<span id="cb2-64">var4 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rgamma</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.5</span>)</span>
+<span id="cb2-65">e_x <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (var1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var4 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.2</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> var4<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.001</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> var4<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)))</span>
+<span id="cb2-66">t <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rbinom</span>(n, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, e_x)</span>
+<span id="cb2-67"></span>
+<span id="cb2-68">data_positivity <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(</span>
+<span id="cb2-69">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">t =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor</span>(t), </span>
+<span id="cb2-70">  var1, </span>
+<span id="cb2-71">  var2,</span>
+<span id="cb2-72">  var3,</span>
+<span id="cb2-73">  var4</span>
+<span id="cb2-74">)</span>
+<span id="cb2-75"></span>
+<span id="cb2-76">data_positivity <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> data_positivity <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb2-77">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">p =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glm</span>(t <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> var1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">poly</span>(var4, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_positivity, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> binomial) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb2-78">           <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predict</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"response"</span>),</span>
+<span id="cb2-79">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">w_ate =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">wt_ate</span>(p, t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.treated =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb2-80">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">w_ato =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">wt_ato</span>(p, t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.treated =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb2-81">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">w_att =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">wt_att</span>(p, t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.treated =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb2-82">  ) </span></code></pre></div>
+</details>
+</div>
+</section>
+<section id="target-population" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="target-population">Target Population</h2>
+<p>Targeting different causal estimands will yield different target populations (for a longer discussion of target populations <a href="https://livefreeordichotomize.com/posts/2019-01-17-understanding-propensity-score-weighting/">see this post</a> and check out <a href="https://arxiv.org/abs/2106.10577">this awesome pre-print by Noah Griefer and Liz Stuart</a>. For example, if you are interested in answering a question with the treated group in mind, an estimand that estimates the average treatment effect among the treated (ATT), will be appropriate. Targeting this estimand will lead to selecting unexposed individuals who match the characterstics of the treated population (whether via matching to these individuals or upweighting them in the sample). Mirrored histograms can be a nice way to visualize the distribution of your target population after incorporating the propensity score when either matching or weighting are used. These basic plots are simply histograms of the <em>propensity score</em>, stratified by exposure. “Mirroring” these histograms above and below the x-axis, can make it easier to compare regions of overlap.</p>
+<section id="what-am-i-looking-for" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="what-am-i-looking-for">What am I looking for?</h3>
+<ul>
+<li><strong>Overlap</strong>: What is the degree of overlap between the exposure groups?</li>
+<li><strong>Positivity violations</strong>: Does everyone have a non-zero probability of each level of exposure?</li>
+<li><strong>Extreme weights</strong>: Are there any extreme weights that could induce finite sample bias / extreme variance?</li>
+</ul>
+<p>Let’s take a look at an example. We can use the <a href="https://r-causal.github.io/halfmoon/"><code>halfmoon</code></a> package to create these.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>The <code>cobalt</code> package is another excellent tool that can create many of these plots in R.</p>
+</div></div><p>Below is the basic implementation of this mirrored histogram prior to incorporating the propensity score. On the top half of the visualization, we see the distribution of the propensity score in the treated group (blue); the bottom half displays the distribution among the controls (orange). Looking at this plot, I see good <em>overlap</em> (i.e.&nbsp;the two distributions overlap), and I do not see evidence of <em>positivity violations</em>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(data, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(p, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb3-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"control"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"treated"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> abs) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"propensity score"</span>,</span>
+<span id="cb3-7">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"count"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb3-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Now let’s incorporate the propensity score. First, let’s see what this plot looks like if our target population is the <em>whole population</em>, meaning we are interested in estimate the ATE. I have added the following line of code to the <code>ggplot</code> layers below: <code>geom_mirror_histogram(bins = 30, aes(weight = w_ate), alpha = 0.5)</code>. Now, I can see the <em>pseudo-population</em> that is created after implementing the propensity score weight. Notice the shape of the distributions match between the two groups (this is what the ATE weight is trying to do!). Looking at the figure below, I also can conclude that there aren’t any <em>extreme weights</em>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(data, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(p, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb4-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weight =</span> w_ate), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb4-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"control"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"treated"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> abs) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"propensity score"</span>,</span>
+<span id="cb4-8">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"treatment"</span>,</span>
+<span id="cb4-9">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"count"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb4-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>These plots can be useful as a pedagogical tool to give a sense for how the different target estimands lead to different target populations. For example, let’s see what the pseudo-population looks like after using the ATT weight. Notice in the figure below, the “weighted” pseudo-population in the treated arm exactly overlaps with the actual distribution of the treated observations – this is exactly what an ATT weight does, everyone in the treated population receives a weight of 1. Now look at the bottom half of the figure – the distribution of the propensity scores in the control group now matches that of the treated – in the regions were there are fewer treated observations, the control observations are down-weighted (where the propensity score is lower) and in the regions where there are more treated observations the control observations are up-weighted (where the propensity score is higher).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(data, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(p, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb5-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weight =</span> w_att), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb5-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"control"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"treated"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> abs) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"propensity score"</span>,</span>
+<span id="cb5-8">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"treatment"</span>,</span>
+<span id="cb5-9">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"count"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb5-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Finally, let’s see how an overlap (ATO) weight compares. Notice in the figure below <em>all</em> observations appear to be down-weighted – the overlap weights are bounded by 0 and 1 (which means they have nice variance properties! There is no risk of having an extreme weight!). Also notice the shape of the distribution – it matches between the two groups.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(data, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(p, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb6-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weight =</span> w_ato), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb6-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"control"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"treated"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> abs) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"propensity score"</span>,</span>
+<span id="cb6-8">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"treatment"</span>,</span>
+<span id="cb6-9">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"count"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb6-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>I like to compare the overlap weights to the distribution after matching with a caliper, as they are both use to estimate a similar estimand. Here, I have created three matched cohorts, each with an increasingly smaller caliper. We can think of matching as an extreme form of weighting, where the observation will receive a weight of 1 if they are in the cohort and 0 otherwise. Here, I have created a dataset called <code>matches</code> that has three columns with these indiciators <code>match_1</code>, <code>match_2</code>, and <code>match_3</code> (you can see the code above by clicking the <strong>Code</strong> toggle in the Setup section).</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Propensity score matching with a <em>caliper</em> means that you only consider matches within a pre-specified distance of each other. Smaller calipers will result in fewer matches.</p>
+</div></div><div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(matches, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(p, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb7-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weight =</span> match_1), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb7-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"control"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"treated"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> abs) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"propensity score"</span>,</span>
+<span id="cb7-8">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"count"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb7-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(matches, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(p, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb8-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb8-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weight =</span> match_2), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb8-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"control"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb8-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"treated"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb8-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> abs) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb8-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"propensity score"</span>,</span>
+<span id="cb8-8">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"count"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb8-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(matches, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(p, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb9-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weight =</span> match_3), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb9-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"control"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"treated"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> abs) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"propensity score"</span>,</span>
+<span id="cb9-8">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"count"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb9-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-7-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>For demonstration purposes, let’s see what one of these plots looks like in a dataset that doesn’t have perfect overlap. Whoa! Look at that weight in the figure below. This is an example where we see a possible <strong>positivity violation</strong> (some observations of propensity scores very close to 1) and <strong>extreme weights</strong> (check out that control with a weight &gt; 500!).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(data_positivity, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(p, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb10-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb10-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weight =</span> w_ate), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb10-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"control"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb10-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label"</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"treated"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb10-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> abs) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb10-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"propensity score"</span>,</span>
+<span id="cb10-8">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"count"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb10-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="balance-visualization" class="level2">
+<h2 class="anchored" data-anchor-id="balance-visualization">Balance visualization</h2>
+<p>Ok, once we’ve checked out the target population, we can see how balanced the exposure groups are after incorporating the propensity score.</p>
+<section id="what-am-i-looking-for-1" class="level3">
+<h3 class="anchored" data-anchor-id="what-am-i-looking-for-1">What am I looking for?</h3>
+<ul>
+<li>balance (in the mean) between treatment groups</li>
+<li>balance across the distribution (for continuous confounders)</li>
+</ul>
+</section>
+<section id="balance-in-the-mean" class="level3">
+<h3 class="anchored" data-anchor-id="balance-in-the-mean">Balance in the mean</h3>
+<p>A common way to look at balance is the <em>standardized mean difference</em>. This will tell us whether the (standardized) means are balanced between the treatment groups (we often target an absolute standardized mean difference less than 0.1 as a rule of thumb). We can use the <code>tidy_smd</code> function to calculate the standardized mean differences between the exposure groups in our example dataset. Let’s see how they compare across the matched datasets.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">matches_smd <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tidy_smd</span>(</span>
+<span id="cb11-2">  matches,</span>
+<span id="cb11-3">  var1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>var4,</span>
+<span id="cb11-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.group =</span> t,</span>
+<span id="cb11-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.wts =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(match_1, match_2, match_3)</span>
+<span id="cb11-6">)</span></code></pre></div>
+</div>
+<p>A nice way to visualize these is a <em>Love Plot</em> (named for <a href="https://twitter.com/thomaselove">Thomas Love</a>, who was one of the first folks to use them). In the <code>halfmoon</code> package there is a <code>geom_love</code> that will help create this as a layer in a <code>ggplot</code>, or you can use the shorthand <code>love_plot</code>. Below we can see that all three matched sets achieve balance with respect to demonstrating standardized mean differences across all pre-treatment variables less than the rule of thumb (0.1). Each of the different “matches” denote a different caliper (from largest: <code>match_1</code> to smallest: <code>match_3</code>). We see here that using a smaller caliper seems to help balance <code>var2</code> at the expense of <code>var4</code> and <code>var1</code> compared to the larger calipers.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(matches_smd, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">abs</span>(smd), variable, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> method, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> method)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb12-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_love</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb12-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Absolute standardized mean difference"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Let’s look at another dataset. I have simulated data I am calling <code>data_nonlinear</code>. Let’s check out the Love Plot for this data. This time I will use our propensity score weights.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">weighted_smd <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tidy_smd</span>(</span>
+<span id="cb13-2">  data_nonlinear,</span>
+<span id="cb13-3">  var1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>var4,</span>
+<span id="cb13-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.group =</span> t,</span>
+<span id="cb13-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.wts =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(w_ate, w_att, w_ato)</span>
+<span id="cb13-6">)</span>
+<span id="cb13-7"></span>
+<span id="cb13-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(weighted_smd, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">abs</span>(smd), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> variable, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> method, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> method)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb13-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_love</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span>   </span>
+<span id="cb13-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Absolute standardized mean difference"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Great! Looks like any of our weighting choices will achieve balance on the mean. Check out the green line (the overlap weights) – the standardized mean differences are exactly 0! This is a feature of this weight, if the propensity score is fit using logistic regression, any variables included in the model will be perfectly balanced on the mean – COOL! BUT as you may have guessed by the name of this dataset, the mean does not tell the whole story. These variables are <em>continuous</em>, so being balanced on the mean does not guarantee that the whole distribution is balanced. To examine the distribution of a variable across treatment groups, we can use an empirical cumulative distribution plot.</p>
+</section>
+</section>
+<section id="balance-across-the-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="balance-across-the-distribution">Balance across the distribution</h2>
+<p>The <code>geom_ecdf</code> function in the <code>halfmoon</code> package allows for you to visualize weighted empirical CDFs. Let’s first look at the <em>unweighted</em> eCDF for <code>var4</code>. We are going to plot the range of <code>var4</code> values on the x-axis and the proportion of <code>var4</code> values that are less than the given x-value on the y-axis (the empirical CDF), stratified by treatment. Looking at the figure below, we see <em>gaps</em> between the lines (meaning the two lines to not overlap, implying that the distributions differ).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(data_nonlinear, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> var4, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb14-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_ecdf</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb14-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Proportion &lt;= x"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Now we can compare this to the <em>weighted</em> eCDF to see if the propensity score weighting improves the balance – I’ll use the overlap weights for demonstration purposes. Hmm. We can see in the plot below that the lines cross (they are balanced on the mean, we knew that from the Love Plot), but there are still pretty large gaps across other portions of the distribution. This suggests that there are some non-linear effects that the propensity score is failing to capture.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(data_nonlinear, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> var4, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb15-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_ecdf</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weights =</span> w_ato)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb15-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Proportion &lt;= x"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Let’s try to refit our propensity score model with a spline on the <code>var4</code> variable, and then recreate our plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1">data_nonlinear <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> data_nonlinear <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb16-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">p =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glm</span>(t <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> var1 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> var3 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> splines<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ns</span>(var4, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>), </span>
+<span id="cb16-3">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_nonlinear) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb16-4">           <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predict</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"response"</span>),</span>
+<span id="cb16-5">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">w_ato =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">wt_ato</span>(p, t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.treated =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)) </span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>ℹ Treating `.exposure` as binary</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(data_nonlinear, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> var4, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb18-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_ecdf</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weights =</span> w_ato)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb18-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Proportion &lt;= x"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb18-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Much better!</p>
+</section>
+<section id="heterogeneous-treatment-effect" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="heterogeneous-treatment-effect">Heterogeneous treatment effect</h2>
+<p>Here is the last visual! This is a quick plot that can help explore possible treatment heterogeneity.</p>
+<section id="what-am-i-looking-for-2" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="what-am-i-looking-for-2">What am I looking for?</h3>
+<ul>
+<li>Differences in the treatment effect across the covariate space</li>
+</ul>
+<p>In this example dataset, the average treatment effect is 0. Let’s show that. There are lots of ways to estimate this, for example, we can use the ATE weights.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(y <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> t, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weight =</span> w_ate)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in lm(y ~ t, data = data, weight = w_ate): partial argument match of
+'weight' to 'weights'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in match.call(definition, call, expand.dots, envir): partial argument
+match of 'weight' to 'weights'
+
+Warning in match.call(definition, call, expand.dots, envir): partial argument
+match of 'weight' to 'weights'</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ t, data = data, weights = w_ate)
+
+Coefficients:
+(Intercept)           t1  
+   -0.02095     -0.05364  </code></pre>
+</div>
+</div>
+<p>Awesome! Now let’s create a plot to see if this effect is constant across the covariate space. One way to summarize the “covariate space” is the propensity score! This simple plot has the propensity score on the x-axis and the outcome on the y-axis. We then stratify by the treatment and look at a smoothed line in both groups.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(data, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> p, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb23-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb23-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_smooth</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">method =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"loess"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">formula =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"y ~ x"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb23-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Propensity score"</span>,</span>
+<span id="cb23-5">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Treated"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The lines cross! This indicates that there is treatment effect heterogeneity (in this particular case, when the propensity score is greater than 0.5, there is a positive treatment effect, and when less than 0.5 there is a negative treatment effect).</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>You can find a longer post about these plots <a href="https://livefreeordichotomize.com/posts/2023-07-26-visual-diagnostic-tool-for-causal-inference/">here</a>.</p>
+</div></div><p>Just to see what it looks like when there is <em>not</em> a heterogeneous treatment effect, let’s check out the <code>data_nonlinear</code> dataset (where I simulated a constant effect). Notice below the lines don’t cross, the width between them is constant across the covariate space.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(data_nonlinear, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> p, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> t)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb24-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb24-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_smooth</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">method =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"lm"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">formula =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"y ~ x"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="wrap-up" class="level2">
+<h2 class="anchored" data-anchor-id="wrap-up">Wrap up</h2>
+<p>So there you have it! Four visualizations to add to your tool kit when attempting to answer causal questions.</p>
+<p><em>This post is cross-posted on Lucy’s blog, <a href="https://livefreeordichotomize.com">livefreeordichotomize.com</a></em></p>
+
+
+
+</section>
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div> ]]></description>
+  <category>halfmoon</category>
+  <category>balance</category>
+  <category>heterogeneous treatment effects</category>
+  <guid>https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/index.html</guid>
+  <pubDate>Fri, 04 Aug 2023 04:00:00 GMT</pubDate>
+  <media:content url="https://r-causal.github.io/r-causal-blog/posts/visual-diagnostic-tools/image.png" medium="image" type="image/png" height="89" width="144"/>
+</item>
+<item>
+  <title>Introducing halfmoon</title>
+  <dc:creator>Malcolm Barrett</dc:creator>
+  <link>https://r-causal.github.io/r-causal-blog/posts/introducing-halfmoon/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p><img src="https://r-causal.github.io/r-causal-blog/img/halfmoon.png" align="right" height="138" fig-alt="the halfmoon package hex sticker: a Japanese wood print with a full moon and halfmoon written in cursive"></p>
+<p>We’re thrilled to announce the initial release of the halfmoon package to CRAN! halfmoon is a toolkit to assess balance in propensity-based models.</p>
+<section id="getting-started-with-halfmoon" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started-with-halfmoon">Getting started with halfmoon</h2>
+<p>halfmoon is a toolkit for assessing balance in propensity score models. Additionally, it can help build your intuition for which populations various weighting and matching strategies are working. Let’s explore some of the things halfmoon can help with.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># install.packages("halfmoon")</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(halfmoon)</span></code></pre></div>
+</div>
+<p>Let’s take a look at an example using the built-in dataset, <code>nhefs_weights</code>. <code>nhefs_weights</code> is an extension of the <code>nhefs</code> dataset that includes a variety of propensity-score weights for the causal question: “Does quitting smoking increase weight?” You can find the data for this question in the <a href="https://github.com/NickCH-K/causaldata">causaldata</a> package.</p>
+</section>
+<section id="population-level-balance" class="level2">
+<h2 class="anchored" data-anchor-id="population-level-balance">Population-level balance</h2>
+<p>The primary tool in halfmoon for assessing balance at the population level is <code>geom_mirrored_histogram()</code>.</p>
+<p>Here’s the original, unweighted sample using <code>geom_mirrored_histogram()</code>. The histogram on top is the exposed population, those who quit smoking. The histogram on the bottom is the unexposed population, those who did not quit smoking. While there is a lot of overlap, the two groups are slightly different.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggplot2)</span>
+<span id="cb2-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggokabeito)</span>
+<span id="cb2-3"></span>
+<span id="cb2-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(nhefs_weights, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(.fitted)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(</span>
+<span id="cb2-6">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> qsmk, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> qsmk),</span>
+<span id="cb2-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span></span>
+<span id="cb2-8">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_okabe_ito</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/introducing-halfmoon/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Let’s take a look at the same population weighted using <a href="https://www.r-causal.org/chapters/chapter-10.html#average-treatment-effect">Average Treatment Effect (ATE) weights</a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(nhefs_weights, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(.fitted)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-2">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># plot the original distribution in dark grey</span></span>
+<span id="cb3-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(</span>
+<span id="cb3-4">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> qsmk),</span>
+<span id="cb3-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span></span>
+<span id="cb3-6">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(</span>
+<span id="cb3-8">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> qsmk, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weight =</span> w_ate),</span>
+<span id="cb3-9">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>,</span>
+<span id="cb3-10">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span></span>
+<span id="cb3-11">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> abs) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-12">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_okabe_ito</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/introducing-halfmoon/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Both groups are upweighted to be more similar.</p>
+<p>With <a href="https://www.r-causal.org/chapters/chapter-10.html#average-treatment-effect-among-the-treated">Average Treatment Effect among the Treated (ATT) weights</a>, the untreated group is downweighted to be more similar to the treated group:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(nhefs_weights, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(.fitted)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(</span>
+<span id="cb4-3">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> qsmk),</span>
+<span id="cb4-4">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span></span>
+<span id="cb4-5">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(</span>
+<span id="cb4-7">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> qsmk, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weight =</span> w_att),</span>
+<span id="cb4-8">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>,</span>
+<span id="cb4-9">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span></span>
+<span id="cb4-10">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> abs) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_okabe_ito</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/introducing-halfmoon/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Mirrored histograms are helpful for the dual purpose of understanding how similar the weighted populations are and precisely the population you’re analyzing.</p>
+</section>
+<section id="variable-level-balance" class="level2">
+<h2 class="anchored" data-anchor-id="variable-level-balance">Variable-level balance</h2>
+<p>Another perspective on balance is whether or not the distribution of confounders is similar between groups of the exposed. The propensity score model fit for these weights was:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(causaldata)</span>
+<span id="cb5-2">propensity_model <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glm</span>(</span>
+<span id="cb5-3">  qsmk <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> sex <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-4">    race <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> age <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">I</span>(age<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> education <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-5">    smokeintensity <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">I</span>(smokeintensity<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-6">    smokeyrs <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">I</span>(smokeyrs<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> exercise <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> active <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-7">    wt71 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">I</span>(wt71<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>),</span>
+<span id="cb5-8">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">binomial</span>(),</span>
+<span id="cb5-9">  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># these data are loaded with the causaldata package</span></span>
+<span id="cb5-10">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> nhefs_complete</span>
+<span id="cb5-11">)</span></code></pre></div>
+</div>
+<p>One way to assess if we achieved balance within the confounding variables is by calculating the standardized mean difference (SMD) of the confounder between exposure groups. The closer the SMD is to 0, the more balanced the groups are on average. A common rule of thumb is to have the SMD be less than 0.1<sup>1</sup>.</p>
+<p>Let’s calculate the SMDs for each variable using the different weights in <code>nhefs_weights</code>. halfmoon’s <code>tidy_smd()</code> creates a dataset with the SMDs for each confounder, and <code>geom_love()</code> visualizes the relationship.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">plot_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tidy_smd</span>(</span>
+<span id="cb6-2">  nhefs_weights,</span>
+<span id="cb6-3">  race<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>active,</span>
+<span id="cb6-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.group =</span> qsmk,</span>
+<span id="cb6-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.wts =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">starts_with</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"w_"</span>)</span>
+<span id="cb6-6">)</span>
+<span id="cb6-7"></span>
+<span id="cb6-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(</span>
+<span id="cb6-9">  plot_df,</span>
+<span id="cb6-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(</span>
+<span id="cb6-11">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">abs</span>(smd),</span>
+<span id="cb6-12">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> variable,</span>
+<span id="cb6-13">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> method,</span>
+<span id="cb6-14">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> method</span>
+<span id="cb6-15">  )</span>
+<span id="cb6-16">) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-17">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_love</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-18">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_okabe_ito</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/introducing-halfmoon/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>This is called a Love plot, and you can use the <code>love_plot()</code> wrapper function to achieve the same goal:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">love_plot</span>(plot_df) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_okabe_ito</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/introducing-halfmoon/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>One downside to SMD plots is that they only give you information about one statistic that focuses on the center of the variable. For a binary or categorical variable, that’s usually enough. However, a continuous variable could be balanced in the mean but unbalanced in the tails.</p>
+<p>Let’s look at <code>smokeyrs</code>, a continuish<sup>2</sup> variable that represents the smoke-years a participant had before quitting smoking. We’ll use the empirical cumulative distribution function (ECDF) to compare the differences between exposure groups across the range of <code>smokeyrs</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(</span>
+<span id="cb8-2">  nhefs_weights,</span>
+<span id="cb8-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> smokeyrs, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> qsmk)</span>
+<span id="cb8-4">) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb8-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_ecdf</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb8-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">xlab</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Smoking Years"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb8-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ylab</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Proportion &lt;= x"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb8-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_okabe_ito</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/introducing-halfmoon/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Now, let’s take a look with the ATE weight.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(</span>
+<span id="cb9-2">  nhefs_weights,</span>
+<span id="cb9-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> smokeyrs, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> qsmk)</span>
+<span id="cb9-4">) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_ecdf</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weights =</span> w_ato)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">xlab</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Smoking Years"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ylab</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Proportion &lt;= x"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_okabe_ito</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/introducing-halfmoon/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The balance is much better.</p>
+</section>
+<section id="matching" class="level2">
+<h2 class="anchored" data-anchor-id="matching">Matching</h2>
+<p>The examples thus far have used propensity score weights. We can also use the same techniques by treating matching as an extreme case of weighting where the weight for an observation is either 1 (the observation stays in the dataset) or 0 (the observation is removed from the dataset).</p>
+<p>halfmoon’s <code>bind_matches()</code> facilitates the comparison of many matched datasets by creating a dataset with these weights for each model.</p>
+<p>Consider these two objects from the <a href="https://github.com/kosukeimai/MatchIt">MatchIt</a> documentation:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(MatchIt)</span>
+<span id="cb10-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Default: 1:1 NN PS matching w/o replacement</span></span>
+<span id="cb10-3">m.out1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matchit</span>(treat <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> age <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> educ <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> race <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> nodegree <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb10-4">                   married <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> re74 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> re75, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> lalonde)</span>
+<span id="cb10-5"></span>
+<span id="cb10-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># 1:1 NN Mahalanobis distance matching w/ replacement and</span></span>
+<span id="cb10-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># exact matching on married and race</span></span>
+<span id="cb10-8">m.out2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">matchit</span>(treat <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> age <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> educ <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> race <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> nodegree <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb10-9">                   married <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> re74 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> re75, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> lalonde,</span>
+<span id="cb10-10">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">distance =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"mahalanobis"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">replace =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>,</span>
+<span id="cb10-11">                  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">exact =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> married <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> race)</span></code></pre></div>
+</div>
+<p><code>bind_matches()</code> creates a dataset with the original data plus the matching indicator that we’ll use as weights:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">matches <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">bind_matches</span>(lalonde, m.out1, m.out2)</span>
+<span id="cb11-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">head</span>(matches)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     treat age educ   race married nodegree re74 re75       re78 m.out1 m.out2
+NSW1     1  37   11  black       1        1    0    0  9930.0460      1      1
+NSW2     1  22    9 hispan       0        1    0    0  3595.8940      1      1
+NSW3     1  30   12  black       0        0    0    0 24909.4500      1      1
+NSW4     1  27   11  black       0        1    0    0  7506.1460      1      1
+NSW5     1  33    8  black       0        1    0    0   289.7899      1      1
+NSW6     1  22    9  black       0        1    0    0  4056.4940      1      1</code></pre>
+</div>
+</div>
+<p>Now that we have variables we can use as weights, we can use the same techniques as with propensity score weighting:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">many_matched_smds <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tidy_smd</span>(</span>
+<span id="cb13-2">  matches,</span>
+<span id="cb13-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(age, educ, race, nodegree, married, re74, re75), </span>
+<span id="cb13-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.group =</span> treat, </span>
+<span id="cb13-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.wts =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(m.out1, m.out2)</span>
+<span id="cb13-6">) </span>
+<span id="cb13-7"></span>
+<span id="cb13-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">love_plot</span>(many_matched_smds) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb13-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_okabe_ito</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/introducing-halfmoon/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># use the distance as the propensity score</span></span>
+<span id="cb14-2">matches<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>ps <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> m.out1<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>distance</span>
+<span id="cb14-3"></span>
+<span id="cb14-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(matches, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(ps)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-5">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(</span>
+<span id="cb14-6">        <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor</span>(treat)),</span>
+<span id="cb14-7">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span></span>
+<span id="cb14-8">    ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-9">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mirror_histogram</span>(</span>
+<span id="cb14-10">        <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor</span>(treat), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weight =</span> m.out1),</span>
+<span id="cb14-11">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>,</span>
+<span id="cb14-12">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span></span>
+<span id="cb14-13">    ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb14-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> abs) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-15">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_okabe_ito</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://r-causal.github.io/r-causal-blog/posts/introducing-halfmoon/index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="learn-more-in-the-book" class="level2">
+<h2 class="anchored" data-anchor-id="learn-more-in-the-book">Learn more in the book</h2>
+<p>To see an applied example of a causal analysis using halfmoon, check out <a href="https://www.r-causal.org/chapters/chapter-02.html">the second chapter of <em>Causal Inference in R</em></a>.</p>
+</section>
+<section id="other-techniques" class="level2">
+<h2 class="anchored" data-anchor-id="other-techniques">Other techniques</h2>
+<p>Another way to assess the population created by weighting and matching is to use summary tables. We worked closely with the authors of <a href="https://www.danieldsjoberg.com/gtsummary/">gtsummary</a> to support weighted tables. gtsummary is an incredible package for making easy, beautiful tables in R, and we highly recommend it.</p>
+<p>For an example of how weighted tables can help you understand the population under analysis, check out the chapter on <a href="https://www.r-causal.org/chapters/chapter-10.html">causal estimands</a> in <em>Causal Inference in R</em>.</p>
+</section>
+<section id="future-work" class="level2">
+<h2 class="anchored" data-anchor-id="future-work">Future work</h2>
+<p>halfmoon is early in its lifecycle, although we have been teaching these techniques for several years. Right now, the focus is on causal questions with binary exposures. However, these techniques generalize to other exposures, and we plan to support continuous and categorical exposures fully.</p>
+</section>
+<section id="related-work" class="level2">
+<h2 class="anchored" data-anchor-id="related-work">Related work</h2>
+<p>halfmoon has similar goals to the popular <a href="https://ngreifer.github.io/cobalt/">cobalt</a> package. We designed halfmoon to be more focused and modular than cobalt, but you might prefer cobalt if you work exclusively with related packages like MatchIt and WeightIt. cobalt also currently supports a broader range of balance metrics than halfmoon.</p>
+
+
+
+</section>
+
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div><div id="quarto-appendix" class="default"><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>But don’t put too much faith in such quasirules.↩︎</p></li>
+<li id="fn2"><p>I call variables like this continuish because the number of years is represented as an integer. Theoretically, this concept is continuous, but because it is rounded to the year in the data, there are only 60 values in the variable.↩︎</p></li>
+</ol>
+</aside></div> ]]></description>
+  <category>halfmoon</category>
+  <category>balance</category>
+  <category>packages</category>
+  <guid>https://r-causal.github.io/r-causal-blog/posts/introducing-halfmoon/index.html</guid>
+  <pubDate>Fri, 02 Jun 2023 04:00:00 GMT</pubDate>
+  <media:content url="https://r-causal.github.io/r-causal-blog/posts/introducing-halfmoon/image.png" medium="image" type="image/png" height="89" width="144"/>
+</item>
+</channel>
+</rss>

@@ -1,7 +1,12 @@
 project:
   type: website
 
+listing:
+  contents: posts
+  feed: true
+
 website:
+  site-url: "https://r-causal.github.io/r-causal-blog/"
   title: "Causal Inference in R"
   navbar:
     right:
@@ -16,6 +21,7 @@ format:
   html:
     theme: [lumen, styles.scss]
     css: styles.css
+    include-after-body: plausible.html
 
 editor: visual
 

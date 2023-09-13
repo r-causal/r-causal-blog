@@ -1,4 +1,8 @@
 # options specified here will apply to all posts in this folder
+comments:
+  giscus:
+    repo: r-causal/r-causal-blog
+    category: Blog
 
 # freeze computational output
 # (see https://quarto.org/docs/projects/code-execution.html#freeze)
