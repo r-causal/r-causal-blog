@@ -1,0 +1,88 @@
+---
+title: "Causal models versus prediction models"
+author: "Travis Gerke"
+date: "2023-09-25"
+categories: [prediction, explanation, simulation]
+image: "image.png"
+---
+
+In this post we'll demonstrate a surprising result: even if we know the correct causal model for a particular outcome, a biased model can do a better job at prediction.
+
+## Background
+
+Malcolm and I just finished another super fun run of the [Causal Inference in R Workshop](https://r-causal.github.io/causal_workshop_website/) at [posit::conf 2023](https://posit.co/conference/). Questions about the distinctions between models for causal inference versus models for prediction --- as usual --- repeatedly resurfaced. Such questions are excellent, important, and require some thought to work through. Here, we'll demonstrate an archetypal scenario where a properly specified causal model provides inferior prediction performance to a causally biased model.
+
+This phenomenon was elegantly described in by Galit Shmueli in [To Explain or to Predict?](https://www.stat.berkeley.edu/~aldous/157/Papers/shmueli.pdf). We will follow some simple conditions outlined in that paper to illustrate.
+
+## Conditions for inferior prediction from a causal model
+
+Suppose we know a true causal model is
+
+$y = \beta_1x_1 + \beta_2x_2$,
+
+but we want to find a prediction model that is more accurate with respect to root mean square error (RMSE). Such a model will, of course, be causally biased, but it will generally feature smaller variance in its predictions (i.e. we will manipulate the "bias-variance tradeoff" to favor prediction accuracy). 
+
+Though causal models can predict inadequately under a range of conditions, Shmueli outlined the following four which most often lead to poor performance. 
+
+1. The outcome is very noisy
+2. $\beta_2$ is very small
+3. $x_1$ and $x_2$ are highly correlated
+4. The sample size is small _or_ the range of $x_2$ is small
+
+When these conditions hold, the causally biased model with $\hat\beta_2 = 0$,
+
+$\hat y = \hat\beta_1x_1$ ,
+
+will result in improved prediction accuracy. 
+
+## Simulation
+
+We set up a simulation for a correct causal model $y = 10x_1 + x_2$ as so:
+
+```{r}
+library(tidyverse)
+
+set.seed(8675309)
+n <- 100
+
+# simulate the exposure variables
+x1 <- 100*rnorm(n)
+x2 <- x1/100 + rnorm(n, sd = .1)
+
+# simulate the outcome
+y <- 10*x1 + x2 + rnorm(n, sd = 100)
+
+df_sim <- tibble(y = y, x1 = x1, x2 = x2)
+```
+
+We see that $x_1$ and $x_2$ are highly correlated, with $x_2$ having a small range.
+
+```{r}
+df_sim |> 
+  ggplot() + 
+  geom_point(aes(x = x1, y = x2))
+```
+
+Also, $y$ is very noisy
+
+```{r}
+df_sim |> 
+  ggplot() + 
+  geom_histogram(aes(x = y))
+```
+
+If we use the true causal model we get a prediction RMSE of 
+
+```{r}
+preds_causal <- 10*df_sim$x1 + df_sim$x2
+sqrt(mean(df_sim$y - preds_causal)^2)
+```
+
+With the biased prediction model, we get a smaller RMSE of
+
+```{r}
+preds_biased <- 10*df_sim$x1
+sqrt(mean(df_sim$y - preds_biased)^2)
+```
+
+And that's it! Our true causal model is not as good at predicting the outcome compared to a biased model.
