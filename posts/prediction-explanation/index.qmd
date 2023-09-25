@@ -40,17 +40,22 @@ will result in improved prediction accuracy.
 We set up a simulation for a correct causal model $y = 10x_1 + x_2$ as so:
 
 ```{r}
+#| message: false
+
 library(tidyverse)
 
 set.seed(8675309)
 n <- 100
 
 # simulate the exposure variables
-x1 <- 100*rnorm(n)
-x2 <- x1/100 + rnorm(n, sd = .1)
+x1 <- rnorm(n)
+x2 <- x1/100 + rnorm(n, sd = .01)
+
+beta_1 <- 1
+beta_2 <- 1
 
 # simulate the outcome
-y <- 10*x1 + x2 + rnorm(n, sd = 100)
+y <- beta_1*x1 + beta_2*x2 + rnorm(n, sd = 100)
 
 df_sim <- tibble(y = y, x1 = x1, x2 = x2)
 ```
@@ -84,10 +89,8 @@ Let's add predictions from the true causal model and the biased prediction model
 ```{r}
 df_preds <- df_sim |> 
   mutate(
-    preds_causal = 10*x1 + x2,
-    preds_biased = 10*x1,
-    errors_causal = y - preds_causal,
-    errors_biased = y - preds_biased
+    preds_causal = beta_1*x1 + beta_2*x2,
+    preds_biased = beta_1*x1
   )
 ```
 
