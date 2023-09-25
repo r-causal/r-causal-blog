@@ -60,7 +60,10 @@ We see that $x_1$ and $x_2$ are highly correlated, with $x_2$ having a small ran
 ```{r}
 df_sim |> 
   ggplot() + 
-  geom_point(aes(x = x1, y = x2)) + 
+  geom_point(
+    aes(x = x1, y = x2),
+    alpha = .7, color = "steelblue", size = 3
+  ) + 
   hrbrthemes::theme_ipsum_rc()
 ```
 
@@ -69,22 +72,39 @@ Also, $y$ is very noisy
 ```{r}
 df_sim |> 
   ggplot() + 
-  geom_histogram(aes(x = y)) + 
+  geom_histogram(
+    aes(x = y),
+    fill = "steelblue", bins = 35, alpha = .8, color = "steelblue"
+  ) +
   hrbrthemes::theme_ipsum_rc()
+```
+
+Let's add predictions from the true causal model and the biased prediction model to our data frame, also calculating the errors between their predictions and observed values.
+
+```{r}
+df_preds <- df_sim |> 
+  mutate(
+    preds_causal = 10*x1 + x2,
+    preds_biased = 10*x1,
+    errors_causal = y - preds_causal,
+    errors_biased = y - preds_biased
+  )
 ```
 
 If we use the true causal model we get a prediction RMSE of 
 
 ```{r}
-preds_causal <- 10*df_sim$x1 + df_sim$x2
-sqrt(mean(df_sim$y - preds_causal)^2)
+df_preds |> 
+  yardstick::rmse(y, preds_causal) |> 
+  pull(.estimate)
 ```
 
 With the biased prediction model, we get a smaller RMSE of
 
 ```{r}
-preds_biased <- 10*df_sim$x1
-sqrt(mean(df_sim$y - preds_biased)^2)
+df_preds |> 
+  yardstick::rmse(y, preds_biased) |> 
+  pull(.estimate)
 ```
 
 And that's it! Our true causal model is not as good at predicting the outcome compared to a biased model.
