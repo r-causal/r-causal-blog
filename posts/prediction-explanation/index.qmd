@@ -60,7 +60,8 @@ We see that $x_1$ and $x_2$ are highly correlated, with $x_2$ having a small ran
 ```{r}
 df_sim |> 
   ggplot() + 
-  geom_point(aes(x = x1, y = x2))
+  geom_point(aes(x = x1, y = x2)) + 
+  hrbrthemes::theme_ipsum_rc()
 ```
 
 Also, $y$ is very noisy
@@ -68,7 +69,8 @@ Also, $y$ is very noisy
 ```{r}
 df_sim |> 
   ggplot() + 
-  geom_histogram(aes(x = y))
+  geom_histogram(aes(x = y)) + 
+  hrbrthemes::theme_ipsum_rc()
 ```
 
 If we use the true causal model we get a prediction RMSE of 
